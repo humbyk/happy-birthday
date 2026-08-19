@@ -4,7 +4,7 @@ const SURPRISE_CONFIG = {
     occasionText: "Happy Birthday, ya albee! 🎂",
     partnerName: "sibaa 💖",
     senderName: "amer ✍️",
-    message: "I love you so much, ya albee. ❤️ You make every day happier and more special just by being you. I'm so lucky to have you in my life. Happy Birthday, my love! 🎂💖"
+    message: "I love you so much, ya albee. ❤️ You make every day happier and more special just by being you. I'm so lucky to have you in my life. Happy Birthday, my love! 🎂💕"
 };
 
 document.addEventListener('DOMContentLoaded', () => {

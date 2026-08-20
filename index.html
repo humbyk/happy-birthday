@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A surprise for siba has arrived 🎁</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <title>A surprise for Siba has arrived 🎁</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;600;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="./style.css">
@@ -18,16 +18,49 @@
 
 <body>
 
+    <!-- Ambient background -->
+    <div class="ambient-glow glow-one"></div>
+    <div class="ambient-glow glow-two"></div>
+    <div class="ambient-glow glow-three"></div>
+
     <div class="bg-particles" id="bgParticles"></div>
 
     <canvas id="balloonCanvas"></canvas>
 
-    <div class="container">
+    <!-- Music indicator -->
+    <div class="music-indicator" id="musicIndicator" aria-live="polite">
+        <span class="music-dot"></span>
+        <span class="music-bars">
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+        </span>
+        <span class="music-label">A little music for you</span>
+    </div>
 
-        <div class="gift-box-container" id="giftBoxContainer">
+    <main class="container">
+
+        <!-- =========================
+             GIFT
+        ========================== -->
+
+        <section
+            class="gift-box-container"
+            id="giftBoxContainer"
+            aria-label="Birthday gift">
+
             <div class="box-glow-burst" id="boxGlow"></div>
 
-            <div class="gift-box" id="giftBox">
+            <div class="gift-aura"></div>
+
+            <div
+                class="gift-box"
+                id="giftBox"
+                role="button"
+                tabindex="0"
+                aria-label="Open your birthday surprise">
+
                 <div class="ribbon-vertical"></div>
                 <div class="ribbon-horizontal"></div>
 
@@ -43,82 +76,174 @@
                 <div class="box-body"></div>
             </div>
 
-            <p class="gift-instruction">Tap to open your surprise... 🎁</p>
-        </div>
+            <div class="gift-copy">
+                <span class="gift-mini">A little something for you</span>
 
-        <div class="card hidden" id="memoryCard">
+                <p class="gift-instruction">
+                    Tap to open your surprise
+                    <span>🎁</span>
+                </p>
+
+                <div class="tap-hint">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- =========================
+             MEMORY CARD
+        ========================== -->
+
+        <section
+            class="card hidden"
+            id="memoryCard"
+            aria-label="Birthday message">
+
             <div class="card-glow"></div>
+            <div class="card-shine"></div>
+
+            <div class="card-top-decoration">
+                <span>✦</span>
+                <span>♡</span>
+                <span>✦</span>
+            </div>
 
             <div class="icon-wrap">
                 <span class="sparkle-icon">🎉</span>
             </div>
 
             <div class="letter-content">
-                <span class="eyebrow" id="occasionText">
-                    Happy Birthday, ya 3umree! 💕
+
+                <span
+                    class="eyebrow"
+                    id="occasionText">
+                    Happy Birthday, ya albee! 🎂
                 </span>
 
                 <h1 class="title">
                     To:
-                    <span class="accent" id="partnerName">
+                    <span
+                        class="accent"
+                        id="partnerName">
                         sibaa 💖
                     </span>
                 </h1>
 
+                <div class="title-line"></div>
+
                 <div class="polaroid-frame">
+                    <div class="polaroid-tape"></div>
+
                     <div class="polaroid-image">
                         <img
-                            src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300&auto=format&fit=crop&q=80"
-                            alt="Romantic Memory"
+                            src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&auto=format&fit=crop&q=85"
+                            alt="Romantic memory"
                             class="couple-photo">
+                    </div>
+
+                    <div class="polaroid-caption">
+                        one of my favorite little moments ♡
                     </div>
                 </div>
 
                 <div class="typed-text-container">
-                    <p class="typed-text" id="customMessage">
-                        I love you so much, ya albee. ❤️ You make every day happier and more special just by being you. I'm so lucky to have you in my life. Happy Birthday, ya umree! 💕
+
+                    <div class="quote-mark">“</div>
+
+                    <p
+                        class="typed-text"
+                        id="customMessage">
+                        I love you so much, ya albee. ❤️
+                        You make every day happier and more special
+                        just by being you.
                     </p>
+
                 </div>
+
             </div>
 
             <div class="card-footer">
 
-                <div class="footer-action" id="skipTypingBtn">
+                <button
+                    class="footer-action"
+                    id="skipTypingBtn"
+                    type="button">
+
                     <span class="action-icon">💌</span>
-                    <span class="action-text">Open Me</span>
-                </div>
+
+                    <span class="action-text">
+                        Open Me
+                    </span>
+
+                    <span class="action-arrow">→</span>
+
+                </button>
 
                 <div class="signature">
                     <p>With Love,</p>
-                    <p class="signature-name" id="senderName">
+
+                    <p
+                        class="signature-name"
+                        id="senderName">
                         amer ✍️
                     </p>
                 </div>
 
             </div>
-        </div>
 
-    </div>
+        </section>
 
-    <!-- ENVELOPE -->
+    </main>
 
-    <div class="envelope-overlay hidden" id="envelopeOverlay">
+    <!-- =========================
+         ENVELOPE
+    ========================== -->
+
+    <div
+        class="envelope-overlay hidden"
+        id="envelopeOverlay">
+
+        <div class="envelope-backdrop"></div>
 
         <button
             class="close-overlay-btn"
             id="closeOverlayBtn"
-            aria-label="Close Envelope">
-            ✕
+            aria-label="Close envelope">
+            <span></span>
+            <span></span>
         </button>
+
+        <div class="envelope-intro">
+            <span class="envelope-kicker">
+                just a few little things
+            </span>
+
+            <h2>
+                Open these for me? 💌
+            </h2>
+
+            <p>
+                There are four little pieces of my heart inside.
+            </p>
+        </div>
 
         <div class="cssletter">
 
-            <div class="envelope" id="popupEnvelope">
+            <div
+                class="envelope"
+                id="popupEnvelope">
+
+                <div class="envelope-glow"></div>
 
                 <button
                     class="heart"
                     id="openEnvelopeBtn"
-                    aria-label="Open Envelope">
+                    aria-label="Open envelope">
+
+                    <span class="heart-icon">♥</span>
 
                     <span class="heart-text">
                         Open
@@ -134,22 +259,38 @@
                     <div class="envelope-bottom"></div>
                 </div>
 
+                <div class="envelope-seal">
+                    ♥
+                </div>
+
             </div>
 
             <div
                 class="letters-container"
                 id="lettersContainer">
 
+                <!-- LETTER 1 -->
                 <blockquote
                     class="letter center draggable-item"
                     id="letter1"
                     tabindex="0">
 
+                    <div class="letter-paper-glow"></div>
+
                     <button
                         class="closeLetter"
-                        title="Close Letter">
-                        ✕
+                        title="Close letter"
+                        aria-label="Close letter">
+                        ×
                     </button>
+
+                    <div class="letter-number">
+                        01
+                    </div>
+
+                    <div class="letter-icon">
+                        ♡
+                    </div>
 
                     <p>
                         You make my days so much brighter. ❤️
@@ -162,20 +303,32 @@
 
                 </blockquote>
 
+                <!-- LETTER 2 -->
                 <blockquote
                     class="letter center draggable-item"
                     id="letter2"
                     tabindex="0">
 
+                    <div class="letter-paper-glow"></div>
+
                     <button
                         class="closeLetter"
-                        title="Close Letter">
-                        ✕
+                        title="Close letter"
+                        aria-label="Close letter">
+                        ×
                     </button>
 
+                    <div class="letter-number">
+                        02
+                    </div>
+
+                    <div class="letter-icon">
+                        ✨
+                    </div>
+
                     <p>
-                        Even the smallest moments feel special with you. 💕
-                        I love making memories with you.
+                        Even the smallest moments feel special
+                        with you. 💕 I love making memories with you.
                     </p>
 
                     <cite>
@@ -184,16 +337,28 @@
 
                 </blockquote>
 
+                <!-- LETTER 3 -->
                 <blockquote
                     class="letter center draggable-item"
                     id="letter3"
                     tabindex="0">
 
+                    <div class="letter-paper-glow"></div>
+
                     <button
                         class="closeLetter"
-                        title="Close Letter">
-                        ✕
+                        title="Close letter"
+                        aria-label="Close letter">
+                        ×
                     </button>
+
+                    <div class="letter-number">
+                        03
+                    </div>
+
+                    <div class="letter-icon">
+                        ♡
+                    </div>
 
                     <p>
                         You're my comfort and my happiness. 💕
@@ -206,6 +371,7 @@
 
                 </blockquote>
 
+                <!-- POLAROID -->
                 <div
                     class="letter center draggable-item polaroid-style"
                     id="letter4"
@@ -213,20 +379,27 @@
 
                     <button
                         class="closeLetter"
-                        title="Close Polaroid">
-                        ✕
+                        title="Close polaroid"
+                        aria-label="Close polaroid">
+                        ×
                     </button>
 
                     <div class="polaroid-wrapper">
 
-                        <img
-                            src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300&auto=format&fit=crop&q=80"
-                            class="polaroid-img"
-                            alt="Romantic Memory">
+                        <div class="polaroid-img-wrap">
+                            <img
+                                src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=500&auto=format&fit=crop&q=85"
+                                class="polaroid-img"
+                                alt="Romantic memory">
+                        </div>
 
                         <p class="polaroid-text">
                             For You 💕
                         </p>
+
+                        <span class="polaroid-date">
+                            always ♡
+                        </span>
 
                     </div>
 
@@ -236,13 +409,23 @@
 
         </div>
 
+        <div class="envelope-progress">
+            <span id="letterProgress">4 little surprises</span>
+        </div>
+
     </div>
 
-    <!-- FINAL SURPRISE -->
+    <!-- =========================
+         FINAL SURPRISE
+    ========================== -->
 
-    <div
+    <section
         class="final-surprise hidden"
         id="finalSurprise">
+
+        <div class="final-orb orb-one"></div>
+        <div class="final-orb orb-two"></div>
+        <div class="final-orb orb-three"></div>
 
         <div class="final-surprise-content">
 
@@ -250,24 +433,38 @@
                 class="final-tease"
                 id="finalTease">
 
-                <span>
-                    👀
+                <div class="final-tease-icon">
+                    <span>👀</span>
+                </div>
+
+                <span class="final-kicker">
+                    wait a second...
                 </span>
 
                 <h2>
-                    wait...
+                    one more thing
                 </h2>
 
                 <p>
-                    there's one more thing
+                    I saved the most important part for last.
                 </p>
+
+                <div class="final-loading">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
 
             </div>
 
             <button
                 class="final-heart-button"
                 id="finalHeartButton"
-                aria-label="Open final message">
+                aria-label="Open final message"
+                type="button">
+
+                <span class="heart-ring ring-one"></span>
+                <span class="heart-ring ring-two"></span>
 
                 <span class="final-heart-shape">
                     ❤
@@ -283,9 +480,15 @@
                 class="final-message"
                 id="finalMessage">
 
+                <div class="final-message-glow"></div>
+
                 <div class="final-sparkle">
                     ✨
                 </div>
+
+                <span class="final-small-title">
+                    from my heart to yours
+                </span>
 
                 <h1>
                     Happy Birthday
@@ -294,35 +497,56 @@
                     </span>
                 </h1>
 
+                <div class="final-divider">
+                    <span>♡</span>
+                </div>
+
                 <p>
                     I hope you know how special you are to me
                     and how much I appreciate every moment we
-                    share together
-                    ❤️
+                    share together. ❤️
                 </p>
 
                 <p>
-                    I love you more than words can explain
+                    I love you more than words can explain,
                     and I hope this year brings you everything
-                    you deserve
-                    🥹💕
+                    you deserve and so much more. 🥹💕
+                </p>
+
+                <p class="final-last-line">
+                    No matter how many birthdays come and go,
+                    I'm always going to be grateful that I get
+                    to call you mine. ❤️
                 </p>
 
                 <div class="final-signature">
-                    forever yours,<br>
+                    forever yours,
+                    <br>
                     <span>
                         amer ✍️
                     </span>
+                </div>
+
+                <div class="final-bottom-hearts">
+                    <span>♡</span>
+                    <span>♥</span>
+                    <span>♡</span>
                 </div>
 
             </div>
 
         </div>
 
-    </div>
+    </section>
+
+    <!-- Optional song will be connected later -->
+    <audio
+        id="birthdaySong"
+        preload="auto"
+        loop>
+    </audio>
 
     <script src="./script.js"></script>
 
 </body>
-
 </html>

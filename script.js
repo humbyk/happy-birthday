@@ -1,7 +1,7 @@
 'use strict';
 
 /* =========================================================
-   BIRTHDAY SURPRISE — COMPLETE SCRIPT
+   BIRTHDAY SURPRISE — COMPLETE SCRIPT + MUSIC
 ========================================================= */
 
 const SURPRISE_CONFIG = {
@@ -10,7 +10,9 @@ const SURPRISE_CONFIG = {
     senderName: "amer ✍️",
 
     message:
-        "I love you so much, ya albee. ❤️ You make every day happier and more special just by being you. I'm so lucky to have you in my life. Happy Birthday, ya 3umree! 💕"
+        "I love you so much, ya albee. ❤️ You make every day happier and more special just by being you. I'm so lucky to have you in my life. Happy Birthday, ya 3umree! 💕",
+
+    music: "./song.mp3"
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,78 +21,77 @@ document.addEventListener('DOMContentLoaded', () => {
        ELEMENTS
     ===================================================== */
 
-    const partnerNameEl =
-        document.getElementById('partnerName');
+    const $ = id => document.getElementById(id);
 
-    const senderNameEl =
-        document.getElementById('senderName');
+    const partnerNameEl = $('partnerName');
+    const senderNameEl = $('senderName');
+    const occasionTextEl = $('occasionText');
+    const customMessageEl = $('customMessage');
 
-    const occasionTextEl =
-        document.getElementById('occasionText');
+    const giftBox = $('giftBox');
+    const giftBoxContainer = $('giftBoxContainer');
+    const memoryCard = $('memoryCard');
+    const bgParticles = $('bgParticles');
 
-    const customMessageEl =
-        document.getElementById('customMessage');
+    const skipTypingBtn = $('skipTypingBtn');
 
-    const giftBox =
-        document.getElementById('giftBox');
+    const canvas = $('balloonCanvas');
+    const ctx = canvas.getContext('2d');
 
-    const giftBoxContainer =
-        document.getElementById('giftBoxContainer');
+    const finalSurprise = $('finalSurprise');
+    const finalHeartButton = $('finalHeartButton');
+    const finalMessage = $('finalMessage');
 
-    const memoryCard =
-        document.getElementById('memoryCard');
-
-    const bgParticles =
-        document.getElementById('bgParticles');
-
-    const skipTypingBtn =
-        document.getElementById('skipTypingBtn');
-
-    const canvas =
-        document.getElementById('balloonCanvas');
-
-    const ctx =
-        canvas.getContext('2d');
-
-    const finalSurprise =
-        document.getElementById('finalSurprise');
-
-    const finalHeartButton =
-        document.getElementById('finalHeartButton');
-
-    const finalMessage =
-        document.getElementById('finalMessage');
-
-    const envelopeOverlay =
-        document.getElementById('envelopeOverlay');
-
-    const closeOverlayBtn =
-        document.getElementById('closeOverlayBtn');
-
-    const openEnvelopeBtn =
-        document.getElementById('openEnvelopeBtn');
-
-    const popupEnvelope =
-        document.getElementById('popupEnvelope');
+    const envelopeOverlay = $('envelopeOverlay');
+    const closeOverlayBtn = $('closeOverlayBtn');
+    const openEnvelopeBtn = $('openEnvelopeBtn');
+    const popupEnvelope = $('popupEnvelope');
 
     /* =====================================================
        TEXT
     ===================================================== */
 
-    occasionTextEl.innerText =
+    occasionTextEl.textContent =
         SURPRISE_CONFIG.occasionText;
 
-    partnerNameEl.innerText =
+    partnerNameEl.textContent =
         SURPRISE_CONFIG.partnerName;
 
-    senderNameEl.innerText =
+    senderNameEl.textContent =
         SURPRISE_CONFIG.senderName;
 
-    customMessageEl.innerText =
+    customMessageEl.textContent =
         SURPRISE_CONFIG.message;
 
     /* =====================================================
-       AUDIO
+       MUSIC
+    ===================================================== */
+
+    const music = new Audio(SURPRISE_CONFIG.music);
+
+    music.loop = true;
+    music.preload = 'auto';
+    music.volume = 0.65;
+
+    let musicStarted = false;
+
+    function startMusic() {
+
+        if (musicStarted) return;
+
+        musicStarted = true;
+
+        music.play().catch(() => {
+            musicStarted = false;
+        });
+    }
+
+    function stopMusic() {
+        music.pause();
+    }
+
+    /* =====================================================
+       SOUND EFFECTS
     ===================================================== */
 
     let audioCtx = null;
@@ -99,10 +100,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!audioCtx) {
 
-            audioCtx = new (
+            const AudioContext =
                 window.AudioContext ||
-                window.webkitAudioContext
-            )();
+                window.webkitAudioContext;
+
+            if (!AudioContext) return;
+
+            audioCtx = new AudioContext();
         }
 
         if (audioCtx.state === 'suspended') {
@@ -119,8 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         initAudio();
 
-        const now =
-            audioCtx.currentTime;
+        if (!audioCtx) return;
+
+        const now = audioCtx.currentTime;
 
         const osc =
             audioCtx.createOscillator();
@@ -173,18 +178,21 @@ document.addEventListener('DOMContentLoaded', () => {
         notes.forEach((freq, i) => {
 
             setTimeout(() => {
+
                 playTone(
                     freq,
                     0.55,
                     0.12,
                     'sine'
                 );
+
             }, i * 80);
 
         });
     }
 
     function playPop() {
+
         playTone(
             260,
             0.09,
@@ -218,11 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const size =
             Math.random() * 8 + 4;
 
-        p.style.width =
-            `${size}px`;
-
-        p.style.height =
-            `${size}px`;
+        p.style.width = `${size}px`;
+        p.style.height = `${size}px`;
 
         p.style.left =
             `${Math.random() * 100}%`;
@@ -277,12 +282,12 @@ document.addEventListener('DOMContentLoaded', () => {
             window.innerHeight;
     }
 
+    resizeCanvas();
+
     window.addEventListener(
         'resize',
         resizeCanvas
     );
-
-    resizeCanvas();
 
     /* =====================================================
        PHOTOS
@@ -290,9 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const imageSources = [
         "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300&auto=format&fit=crop&q=80",
-
         "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300&auto=format&fit=crop&q=80",
-
         "https://images.unsplash.com/photo-1513272795190-0b7c527757ed?w=300&auto=format&fit=crop&q=80"
     ];
 
@@ -300,14 +303,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     imageSources.forEach(src => {
 
-        const img =
-            new Image();
+        const img = new Image();
 
-        img.crossOrigin =
-            "anonymous";
-
-        img.src =
-            src;
+        img.crossOrigin = "anonymous";
+        img.src = src;
 
         loadedImages.push(img);
     });
@@ -410,11 +409,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         update() {
 
-            this.time +=
-                this.swaySpeed;
-
-            this.y +=
-                this.vy;
+            this.time += this.swaySpeed;
+            this.y += this.vy;
 
             this.currentX =
                 this.x +
@@ -425,17 +421,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.swayAmount;
 
             if (this.type === 'polaroid') {
-
-                this.rotation +=
-                    this.rotSpeed;
+                this.rotation += this.rotSpeed;
             }
         }
 
         draw() {
 
             if (this.type === 'balloon') {
-
-                /* STRING */
 
                 ctx.beginPath();
 
@@ -465,20 +457,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     'rgba(163,149,190,0.4)';
 
                 ctx.lineWidth = 1.5;
-
                 ctx.stroke();
-
-                /* BALLOON */
 
                 ctx.save();
 
-                ctx.shadowColor =
-                    this.glow;
-
+                ctx.shadowColor = this.glow;
                 ctx.shadowBlur = 15;
-
-                ctx.fillStyle =
-                    this.color;
+                ctx.fillStyle = this.color;
 
                 ctx.beginPath();
 
@@ -493,8 +478,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
 
                 ctx.fill();
-
-                /* HIGHLIGHT */
 
                 ctx.beginPath();
 
@@ -520,8 +503,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 ctx.fill();
 
-                /* KNOT */
-
                 ctx.beginPath();
 
                 ctx.moveTo(
@@ -543,9 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 ctx.closePath();
 
-                ctx.fillStyle =
-                    this.color;
-
+                ctx.fillStyle = this.color;
                 ctx.fill();
 
                 ctx.restore();
@@ -569,8 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.shadowBlur = 12;
                 ctx.shadowOffsetY = 4;
 
-                ctx.fillStyle =
-                    '#ffffff';
+                ctx.fillStyle = '#ffffff';
 
                 ctx.fillRect(
                     -this.width / 2,
@@ -598,8 +576,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } else {
 
-                    ctx.fillStyle =
-                        '#1b0a2a';
+                    ctx.fillStyle = '#1b0a2a';
 
                     ctx.fillRect(
                         -this.width / 2 + 4,
@@ -609,16 +586,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     );
                 }
 
-                /* HEART */
-
-                ctx.fillStyle =
-                    '#ff3377';
+                ctx.fillStyle = '#ff3377';
 
                 const hx = 0;
-
-                const hy =
-                    this.height / 2 - 6;
-
+                const hy = this.height / 2 - 6;
                 const hs = 3.5;
 
                 ctx.beginPath();
@@ -657,7 +628,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
 
                 ctx.closePath();
-
                 ctx.fill();
 
                 ctx.restore();
@@ -683,7 +653,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     (this.radiusY *
                     this.radiusY)
                 ) <= 1;
-
             }
 
             const dx =
@@ -693,11 +662,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 my - this.y;
 
             return (
-                Math.abs(dx) <=
-                this.width / 2 &&
-
-                Math.abs(dy) <=
-                this.height / 2
+                Math.abs(dx) <= this.width / 2 &&
+                Math.abs(dy) <= this.height / 2
             );
         }
     }
@@ -729,13 +695,9 @@ document.addEventListener('DOMContentLoaded', () => {
             this.size =
                 Math.random() * 3 + 2;
 
-            this.hue =
-                hue;
-
+            this.hue = hue;
             this.opacity = 1;
-
-            this.gravity =
-                0.08;
+            this.gravity = 0.08;
 
             this.fadeSpeed =
                 Math.random() * 0.02 + 0.02;
@@ -743,17 +705,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         update() {
 
-            this.vy +=
-                this.gravity;
+            this.vy += this.gravity;
 
-            this.x +=
-                this.vx;
+            this.x += this.vx;
+            this.y += this.vy;
 
-            this.y +=
-                this.vy;
-
-            this.opacity -=
-                this.fadeSpeed;
+            this.opacity -= this.fadeSpeed;
         }
 
         draw() {
@@ -776,7 +733,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-       TRAIL PARTICLES
+       TRAIL
     ===================================================== */
 
     class TrailParticle {
@@ -808,14 +765,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         update() {
 
-            this.x +=
-                this.vx;
+            this.x += this.vx;
+            this.y += this.vy;
 
-            this.y +=
-                this.vy;
-
-            this.opacity -=
-                this.fade;
+            this.opacity -= this.fade;
         }
 
         draw() {
@@ -847,14 +800,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-       HEART SPARK
+       HEARTS
     ===================================================== */
 
-    function createHeartSpark(
-        x,
-        y,
-        big = false
-    ) {
+    function createHeartSpark(x, y, big = false) {
 
         return {
 
@@ -899,8 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ctx.save();
 
-        ctx.globalAlpha =
-            opacity;
+        ctx.globalAlpha = opacity;
 
         ctx.fillStyle =
             `hsla(${hue},95%,65%,${opacity})`;
@@ -943,7 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-       ANIMATION LOOP
+       ANIMATION
     ===================================================== */
 
     function animateBalloons() {
@@ -955,16 +903,13 @@ document.addEventListener('DOMContentLoaded', () => {
             canvas.height
         );
 
-        /* HEART SPARKS */
-
         for (
             let i = heartSparks.length - 1;
             i >= 0;
             i--
         ) {
 
-            const p =
-                heartSparks[i];
+            const p = heartSparks[i];
 
             p.vx *= 0.98;
             p.vy *= 0.98;
@@ -989,16 +934,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        /* TRAIL */
-
         for (
             let i = trailParticles.length - 1;
             i >= 0;
             i--
         ) {
 
-            const p =
-                trailParticles[i];
+            const p = trailParticles[i];
 
             p.update();
             p.draw();
@@ -1008,16 +950,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        /* POPS */
-
         for (
             let i = popParticles.length - 1;
             i >= 0;
             i--
         ) {
 
-            const p =
-                popParticles[i];
+            const p = popParticles[i];
 
             p.update();
             p.draw();
@@ -1027,16 +966,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        /* BALLOONS */
-
         for (
             let i = balloons.length - 1;
             i >= 0;
             i--
         ) {
 
-            const b =
-                balloons[i];
+            const b = balloons[i];
 
             b.update();
             b.draw();
@@ -1046,10 +982,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 -b.radiusY * 2
             ) {
 
-                balloons.splice(
-                    i,
-                    1
-                );
+                balloons.splice(i, 1);
             }
         }
 
@@ -1066,24 +999,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } else {
 
-            isDrawingBalloons =
-                false;
+            isDrawingBalloons = false;
 
             canvas.style.pointerEvents =
                 'none';
         }
     }
 
-    /* =====================================================
-       START CANVAS ANIMATION
-    ===================================================== */
-
     function startCanvasAnimation() {
 
         if (!isDrawingBalloons) {
 
-            isDrawingBalloons =
-                true;
+            isDrawingBalloons = true;
 
             animateBalloons();
         }
@@ -1095,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     canvas.addEventListener(
         'click',
-        (e) => {
+        e => {
 
             for (
                 let i = balloons.length - 1;
@@ -1103,8 +1030,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 i--
             ) {
 
-                const b =
-                    balloons[i];
+                const b = balloons[i];
 
                 if (
                     b.isClicked(
@@ -1130,10 +1056,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         );
                     }
 
-                    balloons.splice(
-                        i,
-                        1
-                    );
+                    balloons.splice(i, 1);
 
                     startCanvasAnimation();
 
@@ -1152,10 +1075,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < 2; i++) {
 
             trailParticles.push(
-                new TrailParticle(
-                    x,
-                    y
-                )
+                new TrailParticle(x, y)
             );
         }
 
@@ -1165,7 +1085,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener(
         'mousemove',
         e => {
-
             addTrail(
                 e.clientX,
                 e.clientY
@@ -1184,6 +1103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.touches[0].clientY
                 );
             }
+
         },
         {
             passive: true
@@ -1215,14 +1135,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 heartSparks.push(
                     createHeartSpark(
                         e.clientX,
-                        e.clientY,
-                        false
+                        e.clientY
                     )
                 );
             }
 
             playPop();
-
             startCanvasAnimation();
         }
     );
@@ -1264,63 +1182,153 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     );
 
-    document.addEventListener(
-        'mouseleave',
-        () => {
+    /* =====================================================
+       OPEN ENVELOPE
+    ===================================================== */
 
-            if (
-                !memoryCard.classList.contains(
-                    'hidden'
-                )
-            ) {
+    function openEnvelopeOverlay() {
 
-                memoryCard.style.transform =
-                    'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-            }
-        }
-    );
+        envelopeOverlay.classList.remove(
+            'hidden'
+        );
+
+        envelopeOverlay.offsetHeight;
+
+        envelopeOverlay.classList.add(
+            'show'
+        );
+
+        popupEnvelope.classList.remove(
+            'active'
+        );
+
+        openEnvelopeBtn.style.opacity = '1';
+        openEnvelopeBtn.style.pointerEvents = 'auto';
+
+        const letters =
+            document.querySelectorAll(
+                '.draggable-item'
+            );
+
+        closedLetters = 0;
+        finalSequenceStarted = false;
+
+        letters.forEach(letter => {
+
+            letter.dataset.closed = 'false';
+
+            letter.style.display = 'flex';
+            letter.style.opacity = '0';
+
+            letter.style.transform =
+                'translate(-50%, -50%) scale(0.1) translateY(120px)';
+
+            letter.style.left = '50%';
+            letter.style.top = '35%';
+            letter.style.zIndex = '1';
+        });
+    }
 
     /* =====================================================
        TYPING
     ===================================================== */
+
+    let typingActive = false;
+    let typingFinished = false;
+    let skipHandlerAttached = false;
 
     function typeMessage() {
 
         const text =
             SURPRISE_CONFIG.message;
 
-        customMessageEl.innerText =
-            "";
+        customMessageEl.innerHTML = '';
 
-        customMessageEl.style.opacity =
-            "1";
+        customMessageEl.style.opacity = '1';
 
         customMessageEl.classList.add(
             'fade-in'
         );
 
         const cursor =
-            document.createElement(
-                'span'
-            );
+            document.createElement('span');
 
         cursor.classList.add(
             'typing-cursor'
         );
 
-        cursor.innerText =
-            "|";
+        cursor.textContent = '|';
 
-        customMessageEl.appendChild(
-            cursor
-        );
+        customMessageEl.appendChild(cursor);
 
         let i = 0;
-        let typingActive = true;
 
-        skipTypingBtn.classList.add(
-            'show'
-        );
+        typingActive = true;
+        typingFinished = false;
+
+        skipTypingBtn.classList.add('show');
+
+        /* IMPORTANT:
+           Attach Open Me ONCE and immediately.
+        */
+
+        if (!skipHandlerAttached) {
+
+            skipHandlerAttached = true;
+
+            skipTypingBtn.addEventListener(
+                'click',
+                () => {
+
+                    if (typingActive) {
+
+                        typingActive = false;
+
+                        cursor.before(
+                            text.substring(i)
+                        );
+
+                        cursor.remove();
+
+                        typingFinished = true;
+                    }
+
+                    const rect =
+                        skipTypingBtn.getBoundingClientRect();
+
+                    for (
+                        let k = 0;
+                        k < 20;
+                        k++
+                    ) {
+
+                        heartSparks.push(
+                            createHeartSpark(
+                                rect.left +
+                                rect.width / 2,
+
+                                rect.top +
+                                rect.height / 2,
+
+                                true
+                            )
+                        );
+                    }
+
+                    playPop();
+
+                    startCanvasAnimation();
+
+                    /* START MUSIC HERE */
+
+                    startMusic();
+
+                    /* OPEN ENVELOPE */
+
+                    openEnvelopeOverlay();
+                }
+            );
+        }
 
         function type() {
 
@@ -1349,78 +1357,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     delay = 700;
 
-                } else if (
-                    char === ','
-                ) {
+                } else if (char === ',') {
 
                     delay = 300;
                 }
 
-                setTimeout(
-                    type,
-                    delay
-                );
+                setTimeout(type, delay);
 
             } else {
+
+                typingActive = false;
+                typingFinished = true;
 
                 cursor.remove();
             }
         }
 
-        skipTypingBtn.onclick = () => {
-
-            if (typingActive) {
-
-                typingActive =
-                    false;
-
-                cursor.before(
-                    text.substring(i)
-                );
-
-                cursor.remove();
-            }
-
-            const rect =
-                skipTypingBtn.getBoundingClientRect();
-
-            for (
-                let k = 0;
-                k < 15;
-                k++
-            ) {
-
-                heartSparks.push(
-                    createHeartSpark(
-                        rect.left +
-                        rect.width / 2,
-
-                        rect.top +
-                        rect.height / 2,
-
-                        true
-                    )
-                );
-            }
-
-            playPop();
-
-            startCanvasAnimation();
-
-            openEnvelopeOverlay();
-        };
-
         type();
     }
 
     /* =====================================================
-       HEART FIREWORKS
+       SPAWN HEART FIREWORKS
     ===================================================== */
 
-    function spawnHeartFireworks(
-        x,
-        y
-    ) {
+    function spawnHeartFireworks(x, y) {
 
         for (
             let i = 0;
@@ -1470,7 +1430,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-       SPAWN BALLOONS
+       BALLOONS
     ===================================================== */
 
     function spawnBalloons() {
@@ -1481,39 +1441,35 @@ document.addEventListener('DOMContentLoaded', () => {
             i++
         ) {
 
-            setTimeout(
-                () => {
+            setTimeout(() => {
 
-                    if (
-                        giftBox.classList.contains(
-                            'open'
+                if (
+                    giftBox.classList.contains(
+                        'open'
+                    )
+                ) {
+
+                    const spawnX =
+                        Math.random() *
+                        (
+                            window.innerWidth -
+                            100
+                        ) + 50;
+
+                    const spawnY =
+                        window.innerHeight + 100;
+
+                    balloons.push(
+                        new Balloon(
+                            spawnX,
+                            spawnY
                         )
-                    ) {
+                    );
 
-                        const spawnX =
-                            Math.random() *
-                            (
-                                window.innerWidth -
-                                100
-                            ) + 50;
+                    startCanvasAnimation();
+                }
 
-                        const spawnY =
-                            window.innerHeight +
-                            100;
-
-                        balloons.push(
-                            new Balloon(
-                                spawnX,
-                                spawnY
-                            )
-                        );
-
-                        startCanvasAnimation();
-                    }
-
-                },
-                i * 120
-            );
+            }, i * 120);
         }
     }
 
@@ -1537,24 +1493,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             playChime();
 
-            giftBox.classList.add(
-                'open'
-            );
+            giftBox.classList.add('open');
 
             const boxGlow =
-                document.getElementById(
-                    'boxGlow'
-                );
+                $('boxGlow');
 
             if (boxGlow) {
-
-                boxGlow.classList.add(
-                    'active'
-                );
+                boxGlow.classList.add('active');
             }
 
-            canvas.style.pointerEvents =
-                'auto';
+            canvas.style.pointerEvents = 'auto';
 
             spawnHeartFireworks(
                 window.innerWidth / 2,
@@ -1563,107 +1511,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
             spawnBalloons();
 
-            setTimeout(
-                () => {
+            setTimeout(() => {
 
-                    giftBoxContainer.classList.add(
-                        'fade-out'
-                    );
+                giftBoxContainer.classList.add(
+                    'fade-out'
+                );
 
-                },
-                900
-            );
+            }, 900);
 
-            setTimeout(
-                () => {
+            setTimeout(() => {
 
-                    giftBoxContainer.style.display =
-                        'none';
+                giftBoxContainer.style.display =
+                    'none';
 
-                    memoryCard.style.display =
-                        'block';
+                memoryCard.style.display =
+                    'block';
 
-                    memoryCard.offsetHeight;
+                memoryCard.offsetHeight;
 
-                    memoryCard.classList.remove(
-                        'hidden'
-                    );
+                memoryCard.classList.remove(
+                    'hidden'
+                );
 
-                    memoryCard.classList.add(
-                        'entering'
-                    );
+                memoryCard.classList.add(
+                    'entering'
+                );
 
-                    typeMessage();
+                typeMessage();
 
-                },
-                1400
-            );
+            }, 1400);
         }
     );
 
     /* =====================================================
-       ENVELOPE
+       ENVELOPE BUTTON
     ===================================================== */
 
     let closedLetters = 0;
     let finalSequenceStarted = false;
-
     let zIndexCounter = 300;
-
-    function openEnvelopeOverlay() {
-
-        envelopeOverlay.classList.remove(
-            'hidden'
-        );
-
-        envelopeOverlay.offsetHeight;
-
-        envelopeOverlay.classList.add(
-            'show'
-        );
-
-        popupEnvelope.classList.remove(
-            'active'
-        );
-
-        openEnvelopeBtn.style.opacity =
-            '1';
-
-        openEnvelopeBtn.style.pointerEvents =
-            'auto';
-
-        const letters =
-            document.querySelectorAll(
-                '.draggable-item'
-            );
-
-        closedLetters = 0;
-        finalSequenceStarted = false;
-
-        letters.forEach(letter => {
-
-            letter.dataset.closed =
-                'false';
-
-            letter.style.display =
-                'flex';
-
-            letter.style.opacity =
-                '0';
-
-            letter.style.transform =
-                'translate(-50%, -50%) scale(0.1) translateY(120px)';
-
-            letter.style.left =
-                '50%';
-
-            letter.style.top =
-                '35%';
-
-            letter.style.zIndex =
-                '1';
-        });
-    }
 
     openEnvelopeBtn.addEventListener(
         'click',
@@ -1674,6 +1560,8 @@ document.addEventListener('DOMContentLoaded', () => {
             );
 
             playChime();
+
+            /* Music continues */
 
             const letters =
                 document.querySelectorAll(
@@ -1713,26 +1601,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             rot: 0
                         };
 
-                    setTimeout(
-                        () => {
+                    setTimeout(() => {
 
-                            item.style.opacity =
-                                '1';
+                        item.style.opacity = '1';
 
-                            item.style.transform =
-                                `translate(calc(-50% + ${offset.dx}px), calc(-50% + ${offset.dy}px)) scale(1) rotate(${offset.rot}deg)`;
+                        item.style.transform =
+                            `translate(calc(-50% + ${offset.dx}px), calc(-50% + ${offset.dy}px)) scale(1) rotate(${offset.rot}deg)`;
 
-                        },
-                        300 +
-                        index * 220
-                    );
+                    }, 300 + index * 220);
                 }
             );
         }
     );
 
     /* =====================================================
-       CLOSE ENVELOPE
+       CLOSE OVERLAY
     ===================================================== */
 
     closeOverlayBtn.addEventListener(
@@ -1743,21 +1626,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 'show'
             );
 
-            setTimeout(
-                () => {
+            setTimeout(() => {
 
-                    envelopeOverlay.classList.add(
-                        'hidden'
-                    );
+                envelopeOverlay.classList.add(
+                    'hidden'
+                );
 
-                },
-                400
-            );
+            }, 400);
         }
     );
 
     /* =====================================================
-       FINAL SURPRISE
+       FINAL SEQUENCE
     ===================================================== */
 
     function startFinalSequence() {
@@ -1766,51 +1646,41 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        finalSequenceStarted =
-            true;
+        finalSequenceStarted = true;
 
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                envelopeOverlay.classList.remove(
-                    'show'
-                );
+            envelopeOverlay.classList.remove(
+                'show'
+            );
 
-            },
-            300
-        );
+        }, 300);
 
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                envelopeOverlay.classList.add(
-                    'hidden'
-                );
+            envelopeOverlay.classList.add(
+                'hidden'
+            );
 
-                finalSurprise.classList.remove(
-                    'hidden'
-                );
+            finalSurprise.classList.remove(
+                'hidden'
+            );
 
-                finalSurprise.offsetHeight;
+            finalSurprise.offsetHeight;
+
+            finalSurprise.classList.add(
+                'show'
+            );
+
+            setTimeout(() => {
 
                 finalSurprise.classList.add(
-                    'show'
+                    'ready'
                 );
 
-                setTimeout(
-                    () => {
+            }, 1100);
 
-                        finalSurprise.classList.add(
-                            'ready'
-                        );
-
-                    },
-                    1100
-                );
-
-            },
-            850
-        );
+        }, 850);
     }
 
     /* =====================================================
@@ -1822,70 +1692,60 @@ document.addEventListener('DOMContentLoaded', () => {
             '.closeLetter'
         );
 
-    closeButtons.forEach(
-        btn => {
+    closeButtons.forEach(btn => {
 
-            btn.addEventListener(
-                'click',
-                e => {
+        btn.addEventListener(
+            'click',
+            e => {
 
-                    e.stopPropagation();
+                e.stopPropagation();
 
-                    const letter =
-                        e.target.closest(
+                const letter =
+                    e.target.closest(
+                        '.draggable-item'
+                    );
+
+                if (!letter) return;
+
+                if (
+                    letter.dataset.closed ===
+                    'true'
+                ) {
+                    return;
+                }
+
+                letter.dataset.closed = 'true';
+
+                letter.style.opacity = '0';
+
+                letter.style.transform =
+                    'translate(-50%, -50%) scale(0.1) translateY(100px)';
+
+                playPop();
+
+                closedLetters++;
+
+                setTimeout(() => {
+
+                    letter.style.display = 'none';
+
+                    const totalLetters =
+                        document.querySelectorAll(
                             '.draggable-item'
-                        );
-
-                    if (!letter) {
-                        return;
-                    }
+                        ).length;
 
                     if (
-                        letter.dataset.closed ===
-                        'true'
+                        closedLetters >=
+                        totalLetters
                     ) {
-                        return;
+
+                        startFinalSequence();
                     }
 
-                    letter.dataset.closed =
-                        'true';
-
-                    letter.style.opacity =
-                        '0';
-
-                    letter.style.transform =
-                        'translate(-50%, -50%) scale(0.1) translateY(100px)';
-
-                    playPop();
-
-                    closedLetters++;
-
-                    setTimeout(
-                        () => {
-
-                            letter.style.display =
-                                'none';
-
-                            const totalLetters =
-                                document.querySelectorAll(
-                                    '.draggable-item'
-                                ).length;
-
-                            if (
-                                closedLetters >=
-                                totalLetters
-                            ) {
-
-                                startFinalSequence();
-                            }
-
-                        },
-                        400
-                    );
-                }
-            );
-        }
-    );
+                }, 400);
+            }
+        );
+    });
 
     /* =====================================================
        DRAGGABLE LETTERS
@@ -1896,287 +1756,235 @@ document.addEventListener('DOMContentLoaded', () => {
             '.draggable-item'
         );
 
-    draggableLetters.forEach(
-        item => {
+    draggableLetters.forEach(item => {
 
-            let startX = 0;
-            let startY = 0;
+        let startX = 0;
+        let startY = 0;
 
-            let initialX = 0;
-            let initialY = 0;
+        let initialX = 0;
+        let initialY = 0;
 
-            let isDragging = false;
+        let isDragging = false;
 
-            const getTransformValues =
-                el => {
+        const getTransformValues = el => {
 
-                    const style =
-                        window.getComputedStyle(
-                            el
-                        );
+            const style =
+                window.getComputedStyle(el);
 
-                    const matrix =
-                        style.transform;
+            const matrix =
+                style.transform;
 
-                    if (
-                        !matrix ||
-                        matrix === 'none'
-                    ) {
+            if (
+                !matrix ||
+                matrix === 'none'
+            ) {
 
-                        return {
-                            x: 0,
-                            y: 0,
-                            rotate: 0
-                        };
-                    }
-
-                    const match =
-                        matrix.match(
-                            /matrix.*\((.+)\)/
-                        );
-
-                    if (!match) {
-
-                        return {
-                            x: 0,
-                            y: 0,
-                            rotate: 0
-                        };
-                    }
-
-                    const values =
-                        match[1]
-                            .split(',')
-                            .map(Number);
-
-                    const a =
-                        values[0];
-
-                    const b =
-                        values[1];
-
-                    const rotate =
-                        Math.round(
-                            Math.atan2(
-                                b,
-                                a
-                            ) *
-                            180 /
-                            Math.PI
-                        );
-
-                    return {
-                        x:
-                            values[4] || 0,
-
-                        y:
-                            values[5] || 0,
-
-                        rotate
-                    };
+                return {
+                    x: 0,
+                    y: 0,
+                    rotate: 0
                 };
+            }
 
-            const dragStart =
-                e => {
+            const match =
+                matrix.match(
+                    /matrix.*\((.+)\)/
+                );
 
-                    if (
-                        e.target.closest(
-                            '.closeLetter'
-                        )
-                    ) {
-                        return;
-                    }
+            if (!match) {
 
-                    if (
-                        e.type ===
-                        'mousedown'
-                    ) {
-                        e.preventDefault();
-                    }
-
-                    isDragging =
-                        true;
-
-                    item.classList.add(
-                        'dragging'
-                    );
-
-                    item.style.cursor =
-                        'grabbing';
-
-                    item.style.zIndex =
-                        zIndexCounter++;
-
-                    const clientX =
-                        e.type ===
-                        'touchstart'
-                            ? e.touches[0].clientX
-                            : e.clientX;
-
-                    const clientY =
-                        e.type ===
-                        'touchstart'
-                            ? e.touches[0].clientY
-                            : e.clientY;
-
-                    startX =
-                        clientX;
-
-                    startY =
-                        clientY;
-
-                    const transform =
-                        getTransformValues(
-                            item
-                        );
-
-                    initialX =
-                        transform.x;
-
-                    initialY =
-                        transform.y;
-
-                    item.dataset.rotate =
-                        transform.rotate;
-
-                    if (
-                        e.type ===
-                        'mousedown'
-                    ) {
-
-                        document.addEventListener(
-                            'mousemove',
-                            dragMove
-                        );
-
-                        document.addEventListener(
-                            'mouseup',
-                            dragEnd
-                        );
-
-                    } else {
-
-                        document.addEventListener(
-                            'touchmove',
-                            dragMove,
-                            {
-                                passive: false
-                            }
-                        );
-
-                        document.addEventListener(
-                            'touchend',
-                            dragEnd
-                        );
-                    }
+                return {
+                    x: 0,
+                    y: 0,
+                    rotate: 0
                 };
+            }
 
-            const dragMove =
-                e => {
+            const values =
+                match[1]
+                    .split(',')
+                    .map(Number);
 
-                    if (!isDragging) {
-                        return;
-                    }
+            const a = values[0];
+            const b = values[1];
 
-                    if (e.cancelable) {
-                        e.preventDefault();
-                    }
+            const rotate =
+                Math.round(
+                    Math.atan2(b, a) *
+                    180 /
+                    Math.PI
+                );
 
-                    const clientX =
-                        e.type ===
-                        'touchmove'
-                            ? e.touches[0].clientX
-                            : e.clientX;
+            return {
+                x: values[4] || 0,
+                y: values[5] || 0,
+                rotate
+            };
+        };
 
-                    const clientY =
-                        e.type ===
-                        'touchmove'
-                            ? e.touches[0].clientY
-                            : e.clientY;
+        const dragMove = e => {
 
-                    const dx =
-                        clientX -
-                        startX;
+            if (!isDragging) return;
 
-                    const dy =
-                        clientY -
-                        startY;
+            if (e.cancelable) {
+                e.preventDefault();
+            }
 
-                    const rot =
-                        item.dataset.rotate ||
-                        0;
+            const clientX =
+                e.type === 'touchmove'
+                    ? e.touches[0].clientX
+                    : e.clientX;
 
-                    item.style.transform =
-                        `translate(${initialX + dx}px, ${initialY + dy}px) scale(1.03) rotate(${rot}deg)`;
-                };
+            const clientY =
+                e.type === 'touchmove'
+                    ? e.touches[0].clientY
+                    : e.clientY;
 
-            const dragEnd =
-                () => {
+            const dx =
+                clientX - startX;
 
-                    isDragging =
-                        false;
+            const dy =
+                clientY - startY;
 
-                    item.classList.remove(
-                        'dragging'
-                    );
+            const rot =
+                item.dataset.rotate || 0;
 
-                    item.style.cursor =
-                        'grab';
+            item.style.transform =
+                `translate(${initialX + dx}px, ${initialY + dy}px) scale(1.03) rotate(${rot}deg)`;
+        };
 
-                    const transform =
-                        getTransformValues(
-                            item
-                        );
+        const dragEnd = () => {
 
-                    const rot =
-                        item.dataset.rotate ||
-                        0;
+            isDragging = false;
 
-                    item.style.transform =
-                        `translate(${transform.x}px, ${transform.y}px) scale(1) rotate(${rot}deg)`;
+            item.classList.remove('dragging');
 
-                    document.removeEventListener(
-                        'mousemove',
-                        dragMove
-                    );
+            item.style.cursor = 'grab';
 
-                    document.removeEventListener(
-                        'mouseup',
-                        dragEnd
-                    );
+            const transform =
+                getTransformValues(item);
 
-                    document.removeEventListener(
-                        'touchmove',
-                        dragMove
-                    );
+            const rot =
+                item.dataset.rotate || 0;
 
-                    document.removeEventListener(
-                        'touchend',
-                        dragEnd
-                    );
-                };
+            item.style.transform =
+                `translate(${transform.x}px, ${transform.y}px) scale(1) rotate(${rot}deg)`;
 
-            item.addEventListener(
-                'mousedown',
-                dragStart
+            document.removeEventListener(
+                'mousemove',
+                dragMove
             );
 
-            item.addEventListener(
-                'touchstart',
-                dragStart,
-                {
-                    passive: true
-                }
+            document.removeEventListener(
+                'mouseup',
+                dragEnd
             );
 
-            item.addEventListener(
-                'dragstart',
-                e => {
-                    e.preventDefault();
-                }
+            document.removeEventListener(
+                'touchmove',
+                dragMove
             );
-        }
-    );
+
+            document.removeEventListener(
+                'touchend',
+                dragEnd
+            );
+        };
+
+        const dragStart = e => {
+
+            if (
+                e.target.closest(
+                    '.closeLetter'
+                )
+            ) {
+                return;
+            }
+
+            if (e.type === 'mousedown') {
+                e.preventDefault();
+            }
+
+            isDragging = true;
+
+            item.classList.add('dragging');
+
+            item.style.cursor = 'grabbing';
+
+            item.style.zIndex =
+                zIndexCounter++;
+
+            const clientX =
+                e.type === 'touchstart'
+                    ? e.touches[0].clientX
+                    : e.clientX;
+
+            const clientY =
+                e.type === 'touchstart'
+                    ? e.touches[0].clientY
+                    : e.clientY;
+
+            startX = clientX;
+            startY = clientY;
+
+            const transform =
+                getTransformValues(item);
+
+            initialX = transform.x;
+            initialY = transform.y;
+
+            item.dataset.rotate =
+                transform.rotate;
+
+            if (e.type === 'mousedown') {
+
+                document.addEventListener(
+                    'mousemove',
+                    dragMove
+                );
+
+                document.addEventListener(
+                    'mouseup',
+                    dragEnd
+                );
+
+            } else {
+
+                document.addEventListener(
+                    'touchmove',
+                    dragMove,
+                    {
+                        passive: false
+                    }
+                );
+
+                document.addEventListener(
+                    'touchend',
+                    dragEnd
+                );
+            }
+        };
+
+        item.addEventListener(
+            'mousedown',
+            dragStart
+        );
+
+        item.addEventListener(
+            'touchstart',
+            dragStart,
+            {
+                passive: true
+            }
+        );
+
+        item.addEventListener(
+            'dragstart',
+            e => {
+                e.preventDefault();
+            }
+        );
+    });
 
     /* =====================================================
        FINAL HEART
@@ -2197,17 +2005,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 'message-open'
             );
 
-            setTimeout(
-                () => {
+            setTimeout(() => {
 
-                    finalMessage.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
+                finalMessage.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
 
-                },
-                150
-            );
+            }, 150);
         }
     );
 
@@ -2228,12 +2033,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ) ||
                 e.target.closest(
                     '.final-heart-button'
+                ) ||
+                e.target.closest(
+                    '#skipTypingBtn'
                 )
             ) {
                 return;
             }
-
-            /* Tiny click hearts */
 
             if (
                 !memoryCard.classList.contains(

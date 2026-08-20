@@ -8,13 +8,28 @@ const SURPRISE_CONFIG = {
     message:
         "I love you so much, ya albee. ❤️ You make every day happier and more special just by being you. I'm so lucky to have you in my life. Happy Birthday, ya 3umree! 💕",
 
-    /*
-     * Later, put your MP3 filename here.
-     * Example:
-     *
-     * song: "./birthday-song.mp3"
-     */
-    song: ""
+    song: "./birthday-song.mp3"
+};
+
+/*
+ * Every timing / delay used throughout the sequence lives here so the
+ * choreography can be tuned in one place instead of hunting through
+ * the file for setTimeout(..., <magic number>) calls.
+ */
+const TIMING = {
+    giftBoxFadeOut: 850,
+    cardReveal: 1250,
+    typingStart: 450,
+    skipButtonShow: 500,
+    letterCloseDelay: 550,
+    envelopeToFinal: 750,
+    finalReadyDelay: 1300,
+    letterFanStagger: 220,
+    letterFanStart: 350,
+    finalScrollDelay: 250,
+    overlayHideDelay: 500,
+    resizeDebounce: 150,
+    trailThrottle: 35
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -407,9 +422,24 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
+    // Debounced so rapid resize events (e.g. dragging a window edge,
+    // or a mobile browser chrome collapsing) don't thrash canvas re-allocation.
+    let resizeTimeout = null;
+
+    function handleResize() {
+
+        clearTimeout(resizeTimeout);
+
+        resizeTimeout =
+            setTimeout(
+                resizeCanvas,
+                TIMING.resizeDebounce
+            );
+    }
+
     window.addEventListener(
         'resize',
-        resizeCanvas
+        handleResize
     );
 
     resizeCanvas();
@@ -1105,6 +1135,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Single guarded entry point for (re)starting the render loop —
+    // every effect trigger below calls this instead of touching the
+    // isDrawingBalloons flag directly, so the loop never double-starts.
+    function ensureAnimating() {
+
+        if (!isDrawingBalloons) {
+
+            isDrawingBalloons =
+                true;
+
+            animateBalloons();
+        }
+    }
+
     function drawHeart(
         context,
         x,
@@ -1199,13 +1243,7 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
 
-        if (!isDrawingBalloons) {
-
-            isDrawingBalloons =
-                true;
-
-            animateBalloons();
-        }
+        ensureAnimating();
     }
 
     /* =========================================
@@ -1261,13 +1299,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (!isDrawingBalloons) {
-
-            isDrawingBalloons =
-                true;
-
-            animateBalloons();
-        }
+        ensureAnimating();
     }
 
     /* =========================================
@@ -1338,7 +1370,7 @@ document.addEventListener('DOMContentLoaded', () => {
             performance.now();
 
         if (
-            now - lastTrailTime < 35
+            now - lastTrailTime < TIMING.trailThrottle
         ) {
             return;
         }
@@ -1359,13 +1391,7 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
 
-        if (!isDrawingBalloons) {
-
-            isDrawingBalloons =
-                true;
-
-            animateBalloons();
-        }
+        ensureAnimating();
     }
 
     document.addEventListener(
@@ -1523,7 +1549,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
 
             },
-            500
+            TIMING.skipButtonShow
         );
 
         function type() {
@@ -1656,7 +1682,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
 
             },
-            850
+            TIMING.giftBoxFadeOut
         );
 
         setTimeout(
@@ -1680,33 +1706,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 setTimeout(
                     typeMessage,
-                    450
+                    TIMING.typingStart
                 );
 
             },
-            1250
+            TIMING.cardReveal
         );
     }
 
+    // giftBox is now a native <button>, so Enter/Space already fire a
+    // click event on their own — the click bubbles up to the container
+    // listener below, so no manual keydown handler is needed here.
     giftBoxContainer.addEventListener(
         'click',
         openGift
-    );
-
-    giftBox.addEventListener(
-        'keydown',
-        e => {
-
-            if (
-                e.key === 'Enter' ||
-                e.key === ' '
-            ) {
-
-                e.preventDefault();
-
-                openGift();
-            }
-        }
     );
 
     /* =========================================
@@ -1769,6 +1782,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 item.dataset.index =
                     index;
+
+                // Reset any drag state left over from a previous open.
+                delete item.dragState;
             }
         );
 
@@ -1809,9 +1825,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         item.style.transform =
                             `translate(calc(-50% + ${offset.dx}px), calc(-50% + ${offset.dy}px)) scale(1) rotate(${offset.rot}deg)`;
 
+                        // Remember where the CSS placed it, in plain
+                        // numbers, so dragging doesn't need to parse
+                        // the transform matrix back out later.
+                        item.dragState = {
+                            x: offset.dx,
+                            y: offset.dy,
+                            rotate: offset.rot
+                        };
+
                     },
-                    350 +
-                    index * 220
+                    TIMING.letterFanStart +
+                    index * TIMING.letterFanStagger
                 );
             }
         );
@@ -1892,7 +1917,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     );
 
                 },
-                500
+                TIMING.overlayHideDelay
             );
         }
     );
@@ -1998,7 +2023,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
 
                         },
-                        550
+                        TIMING.letterCloseDelay
                     );
                 }
             );
@@ -2047,11 +2072,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         );
 
                     },
-                    1300
+                    TIMING.finalReadyDelay
                 );
 
             },
-            750
+            TIMING.envelopeToFinal
         );
     }
 
@@ -2078,13 +2103,16 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(
                 () => {
 
-                    finalMessage.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
+                    if (finalMessage) {
+
+                        finalMessage.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    }
 
                 },
-                250
+                TIMING.finalScrollDelay
             );
         }
     );
@@ -2101,6 +2129,17 @@ document.addEventListener('DOMContentLoaded', () => {
     draggableLetters.forEach(
         item => {
 
+            // Drag position/rotation is tracked directly in JS state
+            // instead of being re-parsed from the CSS transform matrix
+            // on every drag — simpler and avoids matrix-parsing edge
+            // cases (e.g. if a scale ever sneaks into the transform).
+            item.dragState =
+                item.dragState || {
+                    x: 0,
+                    y: 0,
+                    rotate: 0
+                };
+
             let startX = 0;
             let startY = 0;
 
@@ -2109,72 +2148,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let isDragging = false;
 
-            function getTransformValues(
-                el
+            function applyTransform(
+                x,
+                y,
+                scale,
+                rotate
             ) {
 
-                const style =
-                    window.getComputedStyle(
-                        el
-                    );
-
-                const matrix =
-                    style.transform ||
-                    style.webkitTransform;
-
-                if (
-                    !matrix ||
-                    matrix === 'none'
-                ) {
-
-                    return {
-                        x: 0,
-                        y: 0,
-                        rotate: 0
-                    };
-                }
-
-                const values =
-                    matrix
-                        .split('(')[1]
-                        .split(')')[0]
-                        .split(',');
-
-                const a =
-                    parseFloat(
-                        values[0]
-                    );
-
-                const b =
-                    parseFloat(
-                        values[1]
-                    );
-
-                const angle =
-                    Math.round(
-                        Math.atan2(
-                            b,
-                            a
-                        ) *
-                        180 /
-                        Math.PI
-                    );
-
-                const tx =
-                    parseFloat(
-                        values[4]
-                    ) || 0;
-
-                const ty =
-                    parseFloat(
-                        values[5]
-                    ) || 0;
-
-                return {
-                    x: tx,
-                    y: ty,
-                    rotate: angle
-                };
+                item.style.transform =
+                    `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale}) rotate(${rotate}deg)`;
             }
 
             function dragStart(e) {
@@ -2206,9 +2188,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     'dragging'
                 );
 
-                item.style.cursor =
-                    'grabbing';
-
                 item.style.zIndex =
                     zIndexCounter++;
 
@@ -2228,19 +2207,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 startY =
                     clientY;
 
-                const transform =
-                    getTransformValues(
-                        item
-                    );
-
                 initialX =
-                    transform.x;
+                    item.dragState.x;
 
                 initialY =
-                    transform.y;
-
-                item.dataset.rotate =
-                    transform.rotate;
+                    item.dragState.y;
 
                 if (
                     e.type ===
@@ -2300,12 +2271,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dy =
                     clientY - startY;
 
-                const rot =
-                    item.dataset.rotate ||
-                    0;
+                const newX =
+                    initialX + dx;
 
-                item.style.transform =
-                    `translate(${initialX + dx}px, ${initialY + dy}px) scale(1.035) rotate(${rot}deg)`;
+                const newY =
+                    initialY + dy;
+
+                applyTransform(
+                    newX,
+                    newY,
+                    1.035,
+                    item.dragState.rotate
+                );
+
+                // Keep dragState.x/y current so dragEnd (or a future
+                // drag) always starts from the real current position.
+                item.dragState.x = newX;
+                item.dragState.y = newY;
             }
 
             function dragEnd() {
@@ -2321,20 +2303,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     'dragging'
                 );
 
-                item.style.cursor =
-                    'grab';
-
-                const transform =
-                    getTransformValues(
-                        item
-                    );
-
-                const rot =
-                    item.dataset.rotate ||
-                    0;
-
-                item.style.transform =
-                    `translate(${transform.x}px, ${transform.y}px) scale(1) rotate(${rot}deg)`;
+                applyTransform(
+                    item.dragState.x,
+                    item.dragState.y,
+                    1,
+                    item.dragState.rotate
+                );
 
                 document.removeEventListener(
                     'mousemove',
@@ -2374,6 +2348,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 'dragstart',
                 e => {
                     e.preventDefault();
+                }
+            );
+
+            // Safety net: if the tab loses focus mid-drag (alt-tab,
+            // notification, etc.) and mouseup never fires, make sure
+            // the drag still ends cleanly instead of leaving global
+            // mousemove/touchmove listeners attached forever.
+            window.addEventListener(
+                'blur',
+                () => {
+
+                    if (isDragging) {
+                        dragEnd();
+                    }
                 }
             );
         }

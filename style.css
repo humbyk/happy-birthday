@@ -13,6 +13,28 @@
     --border: rgba(255, 255, 255, 0.13);
     --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
     --ease: cubic-bezier(.22, 1, .36, 1);
+
+    /* Radius scale (was scattered as magic numbers) */
+    --radius-xs: 5px;
+    --radius-sm: 7px;
+    --radius-md: 14px;
+    --radius-lg: 17px;
+    --radius-xl: 25px;
+    --radius-2xl: 30px;
+
+    /* Blur scale */
+    --blur-sm: 10px;
+    --blur-md: 20px;
+    --blur-lg: 65px;
+    --blur-xl: 100px;
+
+    /* z-index scale (was scattered magic numbers) */
+    --z-bg: 0;
+    --z-content: 2;
+    --z-canvas: 5;
+    --z-music: 100;
+    --z-envelope: 200;
+    --z-final: 300;
 }
 
 * {
@@ -70,7 +92,7 @@ button {
     inset: 0;
     overflow: hidden;
     pointer-events: none;
-    z-index: 0;
+    z-index: var(--z-bg);
 }
 
 .particle {
@@ -78,6 +100,7 @@ button {
     border-radius: 50%;
     pointer-events: none;
     animation: floatParticle linear forwards;
+    will-change: transform, opacity;
 }
 
 @keyframes floatParticle {
@@ -105,10 +128,10 @@ button {
     width: 420px;
     height: 420px;
     border-radius: 50%;
-    filter: blur(100px);
+    filter: blur(var(--blur-xl));
     pointer-events: none;
     opacity: .13;
-    z-index: 0;
+    z-index: var(--z-bg);
 }
 
 .glow-one {
@@ -137,7 +160,7 @@ button {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 5;
+    z-index: var(--z-canvas);
 }
 
 /* =========================
@@ -148,7 +171,7 @@ button {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 100;
+    z-index: var(--z-music);
     display: flex;
     align-items: center;
     gap: 9px;
@@ -224,7 +247,7 @@ button {
 
 .container {
     position: relative;
-    z-index: 2;
+    z-index: var(--z-content);
     width: 100%;
     min-height: 100vh;
     min-height: 100svh;
@@ -272,7 +295,7 @@ button {
         rgba(255,51,119,.20),
         transparent 65%
     );
-    filter: blur(10px);
+    filter: blur(var(--blur-sm));
     animation: giftAura 3s ease-in-out infinite;
 }
 
@@ -288,15 +311,22 @@ button {
     }
 }
 
+/* .gift-box is now a real <button> — reset native button chrome */
 .gift-box {
     position: relative;
     width: 170px;
     height: 150px;
     transform: translateY(8px);
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
     transition:
         transform .5s var(--ease),
         filter .5s ease;
     filter: drop-shadow(0 30px 25px rgba(0,0,0,.45));
+    will-change: transform;
 }
 
 .gift-box-container:hover .gift-box {
@@ -313,7 +343,7 @@ button {
     bottom: 0;
     width: 154px;
     height: 105px;
-    border-radius: 5px 5px 12px 12px;
+    border-radius: var(--radius-xs) var(--radius-xs) 12px 12px;
     background:
         linear-gradient(90deg,
             rgba(0,0,0,.13),
@@ -348,6 +378,7 @@ button {
     transition:
         transform .9s var(--ease),
         opacity .7s ease;
+    will-change: transform;
 }
 
 .gift-box.open .box-lid {
@@ -430,7 +461,7 @@ button {
     left: 42px;
     width: 28px;
     height: 25px;
-    border-radius: 7px;
+    border-radius: var(--radius-sm);
     background: linear-gradient(135deg,#ffe374,#d89000);
     box-shadow: 0 4px 8px rgba(0,0,0,.2);
 }
@@ -565,7 +596,7 @@ button {
     padding: 46px 38px 30px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,.15);
-    border-radius: 30px;
+    border-radius: var(--radius-2xl);
     background:
         linear-gradient(
             145deg,
@@ -582,6 +613,7 @@ button {
     transition:
         transform .25s ease,
         opacity .7s var(--ease);
+    will-change: transform;
 }
 
 .card.entering {
@@ -617,7 +649,7 @@ button {
     transform: translateX(-50%);
     border-radius: 50%;
     background: rgba(255,51,119,.22);
-    filter: blur(65px);
+    filter: blur(var(--blur-lg));
     pointer-events: none;
 }
 
@@ -739,7 +771,8 @@ button {
     transition: transform .5s var(--ease);
 }
 
-.card:hover .polaroid-frame {
+.card:hover .polaroid-frame,
+.card:focus-within .polaroid-frame {
     transform: rotate(1deg) translateY(-3px);
 }
 
@@ -790,7 +823,7 @@ button {
     width: 100%;
     padding: 17px 20px 18px;
     border: 1px solid rgba(255,255,255,.07);
-    border-radius: 17px;
+    border-radius: var(--radius-lg);
     background: rgba(0,0,0,.13);
 }
 
@@ -809,6 +842,7 @@ button {
     color: rgba(255,244,249,.83);
     font-size: 14px;
     line-height: 1.75;
+    white-space: pre-line;
 }
 
 .fade-in {
@@ -858,7 +892,7 @@ button {
     min-height: 45px;
     padding: 0 14px;
     border: 1px solid rgba(255,51,119,.22);
-    border-radius: 14px;
+    border-radius: var(--radius-md);
     color: #fff;
     background: rgba(255,51,119,.09);
     cursor: pointer;
@@ -922,7 +956,7 @@ button {
 .envelope-overlay {
     position: fixed;
     inset: 0;
-    z-index: 200;
+    z-index: var(--z-envelope);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1031,7 +1065,7 @@ button {
     width: 280px;
     height: 185px;
     transform: translateX(-50%);
-    border-radius: 5px;
+    border-radius: var(--radius-xs);
     background: linear-gradient(145deg,#f9edf1,#d8b7c4);
     box-shadow:
         0 30px 70px rgba(0,0,0,.45),
@@ -1054,7 +1088,7 @@ button {
         rgba(255,51,119,.20),
         transparent 65%
     );
-    filter: blur(20px);
+    filter: blur(var(--blur-md));
     pointer-events: none;
 }
 
@@ -1062,7 +1096,7 @@ button {
     position: absolute;
     inset: 0;
     overflow: hidden;
-    border-radius: 5px;
+    border-radius: var(--radius-xs);
 }
 
 .envelope-left,
@@ -1148,7 +1182,7 @@ button {
     height: 82px;
     transform: translate(-50%, -50%) rotate(-45deg);
     border: 0;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     background: linear-gradient(135deg,#ff4c8c,#c30e50);
     box-shadow:
         0 12px 30px rgba(0,0,0,.28),
@@ -1229,7 +1263,7 @@ button {
     justify-content: center;
     text-align: center;
     border: 1px solid rgba(126,73,91,.16);
-    border-radius: 7px;
+    border-radius: var(--radius-sm);
     background:
         linear-gradient(135deg,#fffdf8,#f8e9e9);
     color: #39232c;
@@ -1245,6 +1279,7 @@ button {
     cursor: grab;
     user-select: none;
     touch-action: none;
+    will-change: transform, opacity;
     transition:
         transform .8s var(--ease),
         opacity .5s ease,
@@ -1338,10 +1373,12 @@ button {
     object-fit: cover;
 }
 
-.polaroid-text {
+/* Specificity used instead of !important so this cleanly
+   overrides the shared ".draggable-item p" / generic text rules */
+.polaroid-style .polaroid-text {
     margin-top: 9px;
-    font-size: 21px !important;
-    color: #37232b !important;
+    font-size: 21px;
+    color: #37232b;
 }
 
 .polaroid-date {
@@ -1370,7 +1407,7 @@ button {
 .final-surprise {
     position: fixed;
     inset: 0;
-    z-index: 300;
+    z-index: var(--z-final);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1529,6 +1566,7 @@ button {
     opacity: 0;
     transform: scale(.55);
     pointer-events: none;
+    will-change: transform;
 }
 
 .final-surprise.ready .final-heart-button {
@@ -1557,6 +1595,7 @@ button {
         drop-shadow(0 0 12px rgba(255,51,119,.55))
         drop-shadow(0 0 40px rgba(255,51,119,.3));
     animation: heartPulse 1.8s ease-in-out infinite;
+    will-change: transform;
 }
 
 @keyframes heartPulse {
@@ -1593,6 +1632,7 @@ button {
     border-radius: 50%;
     transform: translate(-50%,-50%);
     animation: ringPulse 2.3s ease-out infinite;
+    will-change: transform, opacity;
 }
 
 .ring-two {
@@ -1618,7 +1658,7 @@ button {
     padding: 44px 35px 36px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,.14);
-    border-radius: 30px;
+    border-radius: var(--radius-2xl);
     background:
         linear-gradient(
             145deg,
@@ -1803,7 +1843,7 @@ button {
     .card {
         min-height: auto;
         padding: 40px 20px 24px;
-        border-radius: 25px;
+        border-radius: var(--radius-xl);
     }
 
     .title {
@@ -1916,7 +1956,7 @@ button {
 
     .final-message {
         padding: 38px 21px 30px;
-        border-radius: 24px;
+        border-radius: var(--radius-xl);
     }
 
     .final-message p {

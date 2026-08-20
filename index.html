@@ -1,501 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-  <meta name="theme-color" content="#12051c">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A surprise for siba has arrived 🎁</title>
 
-  <title>A surprise for Siba 🎁</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  >
-
-  <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
 
-  <div id="bgParticles" class="bg-particles"></div>
+    <div class="bg-particles" id="bgParticles"></div>
 
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
+    <canvas id="balloonCanvas"></canvas>
 
-  <canvas id="balloonCanvas"></canvas>
+    <div class="container">
 
-  <main class="container">
+        <div class="gift-box-container" id="giftBoxContainer">
+            <div class="box-glow-burst" id="boxGlow"></div>
 
-    <!-- =========================
-         GIFT BOX
-    ========================== -->
+            <div class="gift-box" id="giftBox">
+                <div class="ribbon-vertical"></div>
+                <div class="ribbon-horizontal"></div>
 
-    <section
-      class="gift-box-container"
-      id="giftBoxContainer"
-      aria-label="Birthday gift"
-    >
+                <div class="bow">
+                    <div class="loop left"></div>
+                    <div class="loop right"></div>
+                    <div class="ribbon-tail left"></div>
+                    <div class="ribbon-tail right"></div>
+                    <div class="center-knot"></div>
+                </div>
 
-      <div
-        class="box-glow-burst"
-        id="boxGlow"
-      ></div>
+                <div class="box-lid"></div>
+                <div class="box-body"></div>
+            </div>
 
-      <div
-        class="gift-box"
-        id="giftBox"
-      >
-
-        <div class="ribbon-vertical"></div>
-        <div class="ribbon-horizontal"></div>
-
-        <div class="bow">
-
-          <div class="loop left"></div>
-          <div class="loop right"></div>
-
-          <div class="ribbon-tail left"></div>
-          <div class="ribbon-tail right"></div>
-
-          <div class="center-knot"></div>
-
+            <p class="gift-instruction">Tap to open your surprise... 🎁</p>
         </div>
 
-        <div class="box-lid"></div>
-        <div class="box-body"></div>
+        <div class="card hidden" id="memoryCard">
+            <div class="card-glow"></div>
 
-      </div>
+            <div class="icon-wrap">
+                <span class="sparkle-icon">🎉</span>
+            </div>
 
-      <p class="gift-instruction">
-        Tap to open your surprise... 🎁
-      </p>
+            <div class="letter-content">
+                <span class="eyebrow" id="occasionText">
+                    Happy Birthday, ya 3umree! 💕
+                </span>
 
-      <p class="tiny-hint">
-        turn your sound on ♡
-      </p>
+                <h1 class="title">
+                    To:
+                    <span class="accent" id="partnerName">
+                        sibaa 💖
+                    </span>
+                </h1>
 
-    </section>
+                <div class="polaroid-frame">
+                    <div class="polaroid-image">
+                        <img
+                            src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300&auto=format&fit=crop&q=80"
+                            alt="Romantic Memory"
+                            class="couple-photo">
+                    </div>
+                </div>
 
+                <div class="typed-text-container">
+                    <p class="typed-text" id="customMessage">
+                        I love you so much, ya albee. ❤️ You make every day happier and more special just by being you. I'm so lucky to have you in my life. Happy Birthday, ya umree! 💕
+                    </p>
+                </div>
+            </div>
 
-    <!-- =========================
-         MEMORY CARD
-    ========================== -->
+            <div class="card-footer">
 
-    <section
-      class="card hidden"
-      id="memoryCard"
-    >
+                <div class="footer-action" id="skipTypingBtn">
+                    <span class="action-icon">💌</span>
+                    <span class="action-text">Open Me</span>
+                </div>
 
-      <div class="card-glow"></div>
+                <div class="signature">
+                    <p>With Love,</p>
+                    <p class="signature-name" id="senderName">
+                        amer ✍️
+                    </p>
+                </div>
 
-      <div class="icon-wrap">
-        <span>🎉</span>
-      </div>
-
-      <div class="letter-content">
-
-        <span
-          class="eyebrow"
-          id="occasionText"
-        >
-          Happy Birthday, ya albee! 🎂
-        </span>
-
-        <h1 class="title">
-
-          To:
-
-          <span
-            class="accent"
-            id="partnerName"
-          >
-            sibaa 💖
-          </span>
-
-        </h1>
-
-
-        <div class="polaroid-frame">
-
-          <div class="polaroid-image">
-
-            <img
-              src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&auto=format&fit=crop&q=85"
-              alt="Romantic memory"
-              crossorigin="anonymous"
-            >
-
-          </div>
-
+            </div>
         </div>
 
+    </div>
 
-        <div class="typed-text-container">
+    <!-- ENVELOPE -->
 
-          <p
-            class="typed-text"
-            id="customMessage"
-          ></p>
-
-        </div>
-
-      </div>
-
-
-      <div class="card-footer">
+    <div class="envelope-overlay hidden" id="envelopeOverlay">
 
         <button
-          class="footer-action"
-          id="skipTypingBtn"
-        >
-
-          <span>💌</span>
-          <span>Open Me</span>
-
+            class="close-overlay-btn"
+            id="closeOverlayBtn"
+            aria-label="Close Envelope">
+            ✕
         </button>
 
+        <div class="cssletter">
 
-        <div class="signature">
+            <div class="envelope" id="popupEnvelope">
 
-          <p>With Love,</p>
+                <button
+                    class="heart"
+                    id="openEnvelopeBtn"
+                    aria-label="Open Envelope">
 
-          <p
-            class="signature-name"
-            id="senderName"
-          >
-            amer ✍️
-          </p>
+                    <span class="heart-text">
+                        Open
+                    </span>
+
+                </button>
+
+                <div class="envelope-flap"></div>
+
+                <div class="envelope-folds">
+                    <div class="envelope-left"></div>
+                    <div class="envelope-right"></div>
+                    <div class="envelope-bottom"></div>
+                </div>
+
+            </div>
+
+            <div
+                class="letters-container"
+                id="lettersContainer">
+
+                <blockquote
+                    class="letter center draggable-item"
+                    id="letter1"
+                    tabindex="0">
+
+                    <button
+                        class="closeLetter"
+                        title="Close Letter">
+                        ✕
+                    </button>
+
+                    <p>
+                        You make my days so much brighter. ❤️
+                        I'm really lucky to have you in my life.
+                    </p>
+
+                    <cite>
+                        amer ✍️
+                    </cite>
+
+                </blockquote>
+
+                <blockquote
+                    class="letter center draggable-item"
+                    id="letter2"
+                    tabindex="0">
+
+                    <button
+                        class="closeLetter"
+                        title="Close Letter">
+                        ✕
+                    </button>
+
+                    <p>
+                        Even the smallest moments feel special with you. 💕
+                        I love making memories with you.
+                    </p>
+
+                    <cite>
+                        amer ✍️
+                    </cite>
+
+                </blockquote>
+
+                <blockquote
+                    class="letter center draggable-item"
+                    id="letter3"
+                    tabindex="0">
+
+                    <button
+                        class="closeLetter"
+                        title="Close Letter">
+                        ✕
+                    </button>
+
+                    <p>
+                        You're my comfort and my happiness. 💕
+                        Somehow, you always make everything feel better.
+                    </p>
+
+                    <cite>
+                        amer ✍️
+                    </cite>
+
+                </blockquote>
+
+                <div
+                    class="letter center draggable-item polaroid-style"
+                    id="letter4"
+                    tabindex="0">
+
+                    <button
+                        class="closeLetter"
+                        title="Close Polaroid">
+                        ✕
+                    </button>
+
+                    <div class="polaroid-wrapper">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300&auto=format&fit=crop&q=80"
+                            class="polaroid-img"
+                            alt="Romantic Memory">
+
+                        <p class="polaroid-text">
+                            For You 💕
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <!-- =========================
-       MUSIC
-  ========================== -->
-
-  <div
-    class="music-pill"
-    id="musicPill"
-  >
-
-    <button
-      id="musicToggle"
-      aria-label="Toggle music"
-    >
-      ♫
-    </button>
-
-    <div>
-
-      <b id="musicStatus">
-        music on
-      </b>
-
-      <span>
-        Turned Away ♡
-      </span>
 
     </div>
 
-  </div>
+    <!-- FINAL SURPRISE -->
 
+    <div
+        class="final-surprise hidden"
+        id="finalSurprise">
 
-  <!-- =========================
-       ENVELOPE OVERLAY
-  ========================== -->
+        <div class="final-surprise-content">
 
-  <div
-    class="envelope-overlay hidden"
-    id="envelopeOverlay"
-  >
+            <div
+                class="final-tease"
+                id="finalTease">
 
-    <button
-      class="close-overlay-btn"
-      id="closeOverlayBtn"
-      aria-label="Close"
-    >
-      ✕
-    </button>
+                <span>
+                    👀
+                </span>
 
+                <h2>
+                    wait...
+                </h2>
 
-    <div class="cssletter">
+                <p>
+                    there's one more thing
+                </p>
 
+            </div>
 
-      <!-- ENVELOPE -->
+            <button
+                class="final-heart-button"
+                id="finalHeartButton"
+                aria-label="Open final message">
 
-      <div
-        class="envelope"
-        id="popupEnvelope"
-      >
+                <span class="final-heart-shape">
+                    ❤
+                </span>
 
-        <button
-          class="heart"
-          id="openEnvelopeBtn"
-          aria-label="Open envelope"
-        >
+                <span class="final-heart-text">
+                    One more...
+                </span>
 
-          <span>
-            Open
-          </span>
+            </button>
 
-        </button>
+            <div
+                class="final-message"
+                id="finalMessage">
 
+                <div class="final-sparkle">
+                    ✨
+                </div>
 
-        <div class="envelope-flap"></div>
+                <h1>
+                    Happy Birthday
+                    <span>
+                        Siba 💖
+                    </span>
+                </h1>
 
+                <p>
+                    I hope you know how special you are to me
+                    and how much I appreciate every moment we
+                    share together
+                    ❤️
+                </p>
 
-        <div class="envelope-folds">
+                <p>
+                    I love you more than words can explain
+                    and I hope this year brings you everything
+                    you deserve
+                    🥹💕
+                </p>
 
-          <div class="envelope-left"></div>
-          <div class="envelope-right"></div>
-          <div class="envelope-bottom"></div>
+                <div class="final-signature">
+                    forever yours,<br>
+                    <span>
+                        amer ✍️
+                    </span>
+                </div>
 
-        </div>
-
-      </div>
-
-
-      <!-- LETTERS -->
-
-      <div
-        class="letters-container"
-        id="lettersContainer"
-      >
-
-
-        <!-- LETTER 1 -->
-
-        <blockquote
-          class="letter center draggable-item"
-          id="letter1"
-        >
-
-          <button
-            class="closeLetter"
-            title="Close Letter"
-          >
-            ✕
-          </button>
-
-          <p>
-            You make my days so much brighter. ❤️
-            I'm really lucky to have you in my life.
-          </p>
-
-          <cite>
-            amer ✍️
-          </cite>
-
-        </blockquote>
-
-
-        <!-- LETTER 2 -->
-
-        <blockquote
-          class="letter center draggable-item"
-          id="letter2"
-        >
-
-          <button
-            class="closeLetter"
-            title="Close Letter"
-          >
-            ✕
-          </button>
-
-          <p>
-            Even the smallest moments feel special with you. 💕
-            I love making memories with you.
-          </p>
-
-          <cite>
-            amer ✍️
-          </cite>
-
-        </blockquote>
-
-
-        <!-- LETTER 3 -->
-
-        <blockquote
-          class="letter center draggable-item"
-          id="letter3"
-        >
-
-          <button
-            class="closeLetter"
-            title="Close Letter"
-          >
-            ✕
-          </button>
-
-          <p>
-            You're my comfort and my happiness. 💕
-            Somehow, you always make everything feel better.
-          </p>
-
-          <cite>
-            amer ✍️
-          </cite>
-
-        </blockquote>
-
-
-        <!-- POLAROID -->
-
-        <div
-          class="letter center draggable-item polaroid-style"
-          id="letter4"
-        >
-
-          <button
-            class="closeLetter"
-            title="Close Polaroid"
-          >
-            ✕
-          </button>
-
-
-          <div class="polaroid-wrapper">
-
-            <img
-              src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=500&auto=format&fit=crop&q=85"
-              alt="Romantic memory"
-              crossorigin="anonymous"
-            >
-
-            <p>
-              For You 💕
-            </p>
-
-          </div>
+            </div>
 
         </div>
-
-      </div>
 
     </div>
 
-
-    <p class="drag-tip">
-      drag the letters around • close all four ♡
-    </p>
-
-  </div>
-
-
-  <!-- =========================
-       FINAL SURPRISE
-  ========================== -->
-
-  <section
-    class="final-surprise hidden"
-    id="finalSurprise"
-  >
-
-    <div class="final-surprise-content">
-
-
-      <div class="final-tease">
-
-        <span>
-          👀
-        </span>
-
-        <h2>
-          wait...
-        </h2>
-
-        <p>
-          there's one more thing
-        </p>
-
-      </div>
-
-
-      <button
-        class="final-heart-button"
-        id="finalHeartButton"
-        aria-label="Open final message"
-      >
-
-        <span class="final-heart-shape">
-          ❤
-        </span>
-
-        <span class="final-heart-text">
-          One more...
-        </span>
-
-      </button>
-
-
-      <div
-        class="final-message"
-        id="finalMessage"
-      >
-
-        <div class="final-sparkle">
-          ✨
-        </div>
-
-
-        <h1>
-
-          Happy Birthday
-
-          <span>
-            Siba 💖
-          </span>
-
-        </h1>
-
-
-        <p>
-          I hope you know how special you are to me
-          and how much I appreciate every moment we
-          share together ❤️
-        </p>
-
-
-        <p>
-          I love you more than words can explain
-          and I hope this year brings you everything
-          you deserve 🥹💕
-        </p>
-
-
-        <div class="final-signature">
-
-          forever yours,<br>
-
-          <span>
-            amer ✍️
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =========================
-       SCRIPT
-  ========================== -->
-
-  <script src="./script.js"></script>
+    <script src="./script.js"></script>
 
 </body>
+
 </html>

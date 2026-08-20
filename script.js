@@ -14,33 +14,48 @@ document.addEventListener('DOMContentLoaded', () => {
        ELEMENTS
     ========================= */
 
-    const $ = id => document.getElementById(id);
+    const giftBox = document.getElementById('giftBox');
+    const giftBoxContainer = document.getElementById('giftBoxContainer');
+    const boxGlow = document.getElementById('boxGlow');
 
-    const giftBox = $('giftBox');
-    const giftBoxContainer = $('giftBoxContainer');
-    const memoryCard = $('memoryCard');
-    const boxGlow = $('boxGlow');
+    const memoryCard = document.getElementById('memoryCard');
+    const customMessage = document.getElementById('customMessage');
+    const skipTypingBtn = document.getElementById('skipTypingBtn');
 
-    const occasionText = $('occasionText');
-    const partnerName = $('partnerName');
-    const senderName = $('senderName');
-    const customMessage = $('customMessage');
+    const partnerName = document.getElementById('partnerName');
+    const senderName = document.getElementById('senderName');
+    const occasionText = document.getElementById('occasionText');
 
-    const skipTypingBtn = $('skipTypingBtn');
+    const envelopeOverlay = document.getElementById('envelopeOverlay');
+    const closeOverlayBtn = document.getElementById('closeOverlayBtn');
+    const openEnvelopeBtn = document.getElementById('openEnvelopeBtn');
+    const popupEnvelope = document.getElementById('popupEnvelope');
 
-    const canvas = $('balloonCanvas');
-    const ctx = canvas.getContext('2d');
+    const finalSurprise = document.getElementById('finalSurprise');
+    const finalHeartButton = document.getElementById('finalHeartButton');
+    const finalMessage = document.getElementById('finalMessage');
 
-    const bgParticles = $('bgParticles');
+    const bgParticles = document.getElementById('bgParticles');
+    const canvas = document.getElementById('balloonCanvas');
 
-    const envelopeOverlay = $('envelopeOverlay');
-    const closeOverlayBtn = $('closeOverlayBtn');
-    const openEnvelopeBtn = $('openEnvelopeBtn');
-    const popupEnvelope = $('popupEnvelope');
+    /* =========================
+       SAFETY CHECK
+    ========================= */
 
-    const finalSurprise = $('finalSurprise');
-    const finalHeartButton = $('finalHeartButton');
-    const finalMessage = $('finalMessage');
+    if (!giftBoxContainer) {
+        console.error('giftBoxContainer not found');
+        return;
+    }
+
+    if (!giftBox) {
+        console.error('giftBox not found');
+        return;
+    }
+
+    if (!memoryCard) {
+        console.error('memoryCard not found');
+        return;
+    }
 
     /* =========================
        TEXT
@@ -49,99 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
     occasionText.textContent = SURPRISE_CONFIG.occasionText;
     partnerName.textContent = SURPRISE_CONFIG.partnerName;
     senderName.textContent = SURPRISE_CONFIG.senderName;
-    customMessage.textContent = SURPRISE_CONFIG.message;
-
-    /* =========================
-       AUDIO
-    ========================= */
-
-    const music = new Audio('./song.mp3');
-
-    music.loop = true;
-    music.volume = 0.65;
-    music.preload = 'auto';
-
-    function startMusic() {
-        music.play().catch(() => {
-            console.log('Music waiting for user interaction');
-        });
-    }
-
-    let audioCtx = null;
-
-    function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
-        }
-
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-    }
-
-    function playTone(
-        frequency,
-        duration = 0.2,
-        volume = 0.12,
-        type = 'sine'
-    ) {
-        initAudio();
-
-        const now = audioCtx.currentTime;
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = type;
-        osc.frequency.setValueAtTime(frequency, now);
-
-        gain.gain.setValueAtTime(0.001, now);
-
-        gain.gain.linearRampToValueAtTime(
-            volume,
-            now + 0.02
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            now + duration
-        );
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start(now);
-        osc.stop(now + duration + 0.05);
-    }
-
-    function playPop() {
-        playTone(260, 0.1, 0.2, 'triangle');
-    }
-
-    function playChime() {
-        const notes = [
-            523.25,
-            659.25,
-            783.99,
-            987.77,
-            1046.5
-        ];
-
-        notes.forEach((note, i) => {
-            setTimeout(() => {
-                playTone(note, 0.5, 0.1);
-            }, i * 100);
-        });
-    }
+    customMessage.textContent = '';
 
     /* =========================
        BACKGROUND PARTICLES
     ========================= */
 
     function createParticle(initial = false) {
+
+        if (!bgParticles) return;
 
         const p = document.createElement('div');
 
@@ -166,16 +97,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const pink = Math.random() > 0.5;
 
         p.style.background = pink
-            ? 'rgba(255, 51, 119, 0.25)'
-            : 'rgba(255, 183, 3, 0.25)';
+            ? 'rgba(255,51,119,.25)'
+            : 'rgba(255,183,3,.25)';
 
         p.style.boxShadow = pink
-            ? '0 0 10px rgba(255, 51, 119, 0.4)'
-            : '0 0 10px rgba(255, 183, 3, 0.4)';
+            ? '0 0 10px rgba(255,51,119,.4)'
+            : '0 0 10px rgba(255,183,3,.4)';
 
         bgParticles.appendChild(p);
 
-        setTimeout(() => p.remove(), (duration + delay) * 1000);
+        setTimeout(() => {
+            p.remove();
+        }, (duration + delay) * 1000);
     }
 
     for (let i = 0; i < 25; i++) {
@@ -190,66 +123,70 @@ document.addEventListener('DOMContentLoaded', () => {
        CANVAS
     ========================= */
 
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    let ctx = null;
+
+    if (canvas) {
+        ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+
+        window.addEventListener('resize', resizeCanvas);
     }
 
-    resizeCanvas();
-
-    window.addEventListener('resize', resizeCanvas);
-
-    let balloons = [];
-    let particles = [];
-    let animationRunning = false;
-
     /* =========================
-       HEART PARTICLE
+       SIMPLE HEART PARTICLES
     ========================= */
 
-    function heartParticle(x, y) {
+    let heartParticles = [];
+    let animationRunning = false;
 
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 6 + 2;
+    function createHeartParticle(x, y) {
 
         return {
             x,
             y,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed - 2,
-            size: Math.random() * 6 + 4,
+            vx: (Math.random() - 0.5) * 7,
+            vy: (Math.random() - 0.5) * 7 - 1,
+            size: Math.random() * 5 + 4,
             opacity: 1,
-            life: 1
+            life: Math.random() * 0.02 + 0.015
         };
     }
 
-    function drawHeart(p) {
+    function drawHeart(x, y, size, opacity) {
+
+        if (!ctx) return;
 
         ctx.save();
 
-        ctx.globalAlpha = p.opacity;
+        ctx.globalAlpha = opacity;
         ctx.fillStyle = '#ff3377';
 
         ctx.beginPath();
 
-        ctx.moveTo(p.x, p.y + p.size);
+        ctx.moveTo(x, y + size);
 
         ctx.bezierCurveTo(
-            p.x - p.size * 1.4,
-            p.y,
-            p.x - p.size,
-            p.y - p.size,
-            p.x,
-            p.y - p.size / 3
+            x - size * 1.5,
+            y - size * 0.2,
+            x - size,
+            y - size * 1.4,
+            x,
+            y - size * 0.5
         );
 
         ctx.bezierCurveTo(
-            p.x + p.size,
-            p.y - p.size,
-            p.x + p.size * 1.4,
-            p.y,
-            p.x,
-            p.y + p.size
+            x + size,
+            y - size * 1.4,
+            x + size * 1.5,
+            y - size * 0.2,
+            x,
+            y + size
         );
 
         ctx.fill();
@@ -257,7 +194,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.restore();
     }
 
-    function animate() {
+    function animateHearts() {
+
+        if (!ctx) return;
 
         ctx.clearRect(
             0,
@@ -266,120 +205,57 @@ document.addEventListener('DOMContentLoaded', () => {
             canvas.height
         );
 
-        particles.forEach((p, index) => {
+        for (let i = heartParticles.length - 1; i >= 0; i--) {
+
+            const p = heartParticles[i];
 
             p.x += p.vx;
             p.y += p.vy;
 
-            p.vy += 0.06;
+            p.vx *= 0.98;
+            p.vy *= 0.98;
+            p.vy += 0.04;
 
-            p.life -= 0.018;
-            p.opacity = p.life;
+            p.opacity -= p.life;
 
-            drawHeart(p);
-
-            if (p.life <= 0) {
-                particles.splice(index, 1);
-            }
-        });
-
-        balloons.forEach((b, index) => {
-
-            b.y -= b.speed;
-
-            b.x += Math.sin(b.y * 0.01) * 0.7;
-
-            ctx.save();
-
-            ctx.fillStyle = b.color;
-            ctx.shadowColor = b.color;
-            ctx.shadowBlur = 15;
-
-            ctx.beginPath();
-
-            ctx.ellipse(
-                b.x,
-                b.y,
-                25,
-                32,
-                0,
-                0,
-                Math.PI * 2
+            drawHeart(
+                p.x,
+                p.y,
+                p.size,
+                p.opacity
             );
 
-            ctx.fill();
-
-            ctx.restore();
-
-            if (b.y < -100) {
-                balloons.splice(index, 1);
+            if (p.opacity <= 0) {
+                heartParticles.splice(i, 1);
             }
-        });
+        }
 
-        if (
-            particles.length > 0 ||
-            balloons.length > 0
-        ) {
-            requestAnimationFrame(animate);
+        if (heartParticles.length > 0) {
+            requestAnimationFrame(animateHearts);
         } else {
             animationRunning = false;
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
         }
     }
 
-    function startAnimation() {
+    function spawnHearts(x, y, amount = 30) {
 
-        if (animationRunning) return;
+        if (!ctx) return;
 
-        animationRunning = true;
-
-        requestAnimationFrame(animate);
-    }
-
-    function fireworks(x, y) {
-
-        for (let i = 0; i < 80; i++) {
-            particles.push(
-                heartParticle(x, y)
+        for (let i = 0; i < amount; i++) {
+            heartParticles.push(
+                createHeartParticle(x, y)
             );
         }
 
-        startAnimation();
-    }
-
-    /* =========================
-       BALLOONS
-    ========================= */
-
-    function spawnBalloons() {
-
-        const colors = [
-            '#ff3377',
-            '#ff6b9d',
-            '#ffb703',
-            '#9d4edd',
-            '#4cc9f0'
-        ];
-
-        for (let i = 0; i < 25; i++) {
-
-            setTimeout(() => {
-
-                balloons.push({
-                    x: Math.random() * window.innerWidth,
-                    y: window.innerHeight + 80,
-                    speed: Math.random() * 1.5 + 1,
-                    color:
-                        colors[
-                            Math.floor(
-                                Math.random() *
-                                colors.length
-                            )
-                        ]
-                });
-
-                startAnimation();
-
-            }, i * 120);
+        if (!animationRunning) {
+            animationRunning = true;
+            requestAnimationFrame(animateHearts);
         }
     }
 
@@ -395,11 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         giftOpened = true;
 
-        initAudio();
-
-        startMusic();
-
-        playChime();
+        console.log('Gift box clicked');
 
         giftBox.classList.add('open');
 
@@ -407,30 +279,29 @@ document.addEventListener('DOMContentLoaded', () => {
             boxGlow.classList.add('active');
         }
 
-        fireworks(
+        spawnHearts(
             window.innerWidth / 2,
-            window.innerHeight / 2
+            window.innerHeight / 2,
+            70
         );
 
-        spawnBalloons();
+        setTimeout(() => {
 
-        giftBoxContainer.classList.add('fade-out');
+            giftBoxContainer.classList.add('fade-out');
+
+        }, 500);
 
         setTimeout(() => {
 
             giftBoxContainer.style.display = 'none';
 
-            memoryCard.style.display = 'block';
+            memoryCard.classList.remove('hidden');
 
-            requestAnimationFrame(() => {
-                memoryCard.classList.remove('hidden');
-                memoryCard.classList.add('entering');
-            });
+            memoryCard.classList.add('entering');
 
             typeMessage();
 
-        }, 1400);
-
+        }, 1000);
     });
 
     /* =========================
@@ -442,8 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function typeMessage() {
 
-        clearTimeout(typingTimer);
-
         const text = SURPRISE_CONFIG.message;
 
         customMessage.textContent = '';
@@ -451,8 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
         skipTypingBtn.classList.add('show');
 
         let index = 0;
-
-        typingFinished = false;
 
         const cursor = document.createElement('span');
 
@@ -472,22 +339,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const char = text[index];
+            const character = text[index];
 
-            cursor.before(
-                document.createTextNode(char)
-            );
+            cursor.before(character);
 
             index++;
 
             let delay = 45;
 
             if (
-                char === '.' ||
-                char === '!' ||
-                char === '?'
+                character === '.' ||
+                character === '!' ||
+                character === '?'
             ) {
                 delay = 500;
+            }
+
+            if (character === ',') {
+                delay = 250;
             }
 
             typingTimer = setTimeout(
@@ -497,48 +366,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         typeNext();
+
+        skipTypingBtn.onclick = () => {
+
+            if (!typingFinished) {
+
+                clearTimeout(typingTimer);
+
+                customMessage.textContent =
+                    SURPRISE_CONFIG.message;
+
+                typingFinished = true;
+            }
+
+            skipTypingBtn.classList.remove('show');
+
+            spawnHearts(
+                window.innerWidth / 2,
+                window.innerHeight / 2,
+                30
+            );
+
+            openEnvelopeOverlay();
+        };
     }
-
-    /* =========================
-       ⭐ FIXED OPEN ME BUTTON
-    ========================= */
-
-    skipTypingBtn.addEventListener('click', e => {
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        console.log('OPEN ME CLICKED');
-
-        /* Finish typing immediately */
-
-        if (!typingFinished) {
-
-            clearTimeout(typingTimer);
-
-            customMessage.textContent =
-                SURPRISE_CONFIG.message;
-
-            typingFinished = true;
-        }
-
-        playPop();
-
-        /* Heart burst */
-
-        const rect =
-            skipTypingBtn.getBoundingClientRect();
-
-        fireworks(
-            rect.left + rect.width / 2,
-            rect.top + rect.height / 2
-        );
-
-        /* OPEN ENVELOPE */
-
-        openEnvelopeOverlay();
-
-    });
 
     /* =========================
        ENVELOPE
@@ -548,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function openEnvelopeOverlay() {
 
-        console.log('OPENING ENVELOPE');
+        if (!envelopeOverlay) return;
 
         envelopeOverlay.classList.remove('hidden');
 
@@ -556,12 +407,11 @@ document.addEventListener('DOMContentLoaded', () => {
             envelopeOverlay.classList.add('show');
         });
 
+        if (popupEnvelope) {
+            popupEnvelope.classList.remove('active');
+        }
+
         envelopeOpened = false;
-
-        popupEnvelope.classList.remove('active');
-
-        openEnvelopeBtn.style.opacity = '1';
-        openEnvelopeBtn.style.pointerEvents = 'auto';
 
         const letters =
             document.querySelectorAll('.draggable-item');
@@ -572,103 +422,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
             letter.style.display = 'flex';
             letter.style.opacity = '0';
-
             letter.style.left = '50%';
             letter.style.top = '35%';
 
-            letter.style.zIndex = '1';
-
             letter.style.transform =
-                'translate(-50%, -50%) scale(0.1)';
+                'translate(-50%, -50%) scale(.1) translateY(120px)';
 
+            letter.style.zIndex = '1';
         });
+
+        closedLetters = 0;
     }
 
-    /* =========================
-       ENVELOPE OPEN BUTTON
-    ========================= */
+    if (openEnvelopeBtn) {
 
-    openEnvelopeBtn.addEventListener('click', e => {
+        openEnvelopeBtn.addEventListener('click', (e) => {
 
-        e.preventDefault();
-        e.stopPropagation();
+            e.stopPropagation();
 
-        if (envelopeOpened) return;
+            if (envelopeOpened) return;
 
-        envelopeOpened = true;
+            envelopeOpened = true;
 
-        playChime();
+            popupEnvelope.classList.add('active');
 
-        popupEnvelope.classList.add('active');
+            const letters =
+                document.querySelectorAll('.draggable-item');
 
-        const letters =
-            document.querySelectorAll('.draggable-item');
+            const positions = [
+                [-80, -130, -8],
+                [80, -150, 8],
+                [-20, -200, -4],
+                [50, -70, 10]
+            ];
 
-        const offsets = [
-            [-80, -130, -8],
-            [80, -150, 8],
-            [-20, -200, -4],
-            [50, -70, 10]
-        ];
+            letters.forEach((letter, index) => {
 
-        letters.forEach((letter, index) => {
+                const pos =
+                    positions[index] || [0, -100, 0];
 
-            const offset =
-                offsets[index] ||
-                [0, -100, 0];
+                setTimeout(() => {
 
-            setTimeout(() => {
+                    letter.style.opacity = '1';
 
-                letter.style.opacity = '1';
+                    letter.style.transform =
+                        `translate(calc(-50% + ${pos[0]}px), calc(-50% + ${pos[1]}px)) scale(1) rotate(${pos[2]}deg)`;
 
-                letter.style.transform =
-                    `translate(
-                        calc(-50% + ${offset[0]}px),
-                        calc(-50% + ${offset[1]}px)
-                    )
-                    scale(1)
-                    rotate(${offset[2]}deg)`;
-
-            }, 300 + index * 200);
-
+                }, 300 + index * 200);
+            });
         });
-
-    });
+    }
 
     /* =========================
        CLOSE ENVELOPE
     ========================= */
 
-    closeOverlayBtn.addEventListener('click', e => {
+    if (closeOverlayBtn) {
 
-        e.preventDefault();
+        closeOverlayBtn.addEventListener('click', () => {
 
-        envelopeOverlay.classList.remove('show');
+            envelopeOverlay.classList.remove('show');
 
-        setTimeout(() => {
-            envelopeOverlay.classList.add('hidden');
-        }, 400);
-
-    });
+            setTimeout(() => {
+                envelopeOverlay.classList.add('hidden');
+            }, 400);
+        });
+    }
 
     /* =========================
        LETTERS
     ========================= */
 
     let closedLetters = 0;
+    let finalStarted = false;
 
-    const letters =
-        document.querySelectorAll('.draggable-item');
+    const closeButtons =
+        document.querySelectorAll('.closeLetter');
 
-    letters.forEach(letter => {
+    closeButtons.forEach(button => {
 
-        const closeButton =
-            letter.querySelector('.closeLetter');
+        button.addEventListener('click', (e) => {
 
-        closeButton.addEventListener('click', e => {
-
-            e.preventDefault();
             e.stopPropagation();
+
+            const letter =
+                button.closest('.draggable-item');
+
+            if (!letter) return;
 
             if (letter.dataset.closed === 'true') {
                 return;
@@ -679,9 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
             letter.style.opacity = '0';
 
             letter.style.transform =
-                'translate(-50%, -50%) scale(0.1)';
-
-            playPop();
+                'translate(-50%, -50%) scale(.1) translateY(100px)';
 
             closedLetters++;
 
@@ -689,24 +527,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 letter.style.display = 'none';
 
+                const total =
+                    document.querySelectorAll(
+                        '.draggable-item'
+                    ).length;
+
                 if (
-                    closedLetters >=
-                    letters.length
+                    closedLetters >= total &&
+                    !finalStarted
                 ) {
                     startFinalSequence();
                 }
 
             }, 400);
-
         });
-
     });
 
     /* =========================
-       FINAL SEQUENCE
+       FINAL SURPRISE
     ========================= */
-
-    let finalStarted = false;
 
     function startFinalSequence() {
 
@@ -726,37 +565,199 @@ document.addEventListener('DOMContentLoaded', () => {
                 finalSurprise.classList.add('show');
             });
 
-        }, 700);
+            setTimeout(() => {
+                finalSurprise.classList.add('ready');
+            }, 1000);
 
+        }, 500);
     }
 
     /* =========================
        FINAL HEART
     ========================= */
 
-    finalHeartButton.addEventListener('click', e => {
+    if (finalHeartButton) {
 
-        e.preventDefault();
+        finalHeartButton.addEventListener('click', () => {
 
-        playChime();
+            spawnHearts(
+                window.innerWidth / 2,
+                window.innerHeight / 2,
+                100
+            );
 
-        fireworks(
-            window.innerWidth / 2,
-            window.innerHeight / 2
-        );
+            finalSurprise.classList.add(
+                'message-open'
+            );
 
-        finalSurprise.classList.add('message-open');
+            setTimeout(() => {
 
-        setTimeout(() => {
+                if (finalMessage) {
 
-            finalMessage.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
+                    finalMessage.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
 
-        }, 200);
+                }
 
-    });
+            }, 150);
+        });
+    }
+
+    /* =========================
+       DRAG LETTERS
+    ========================= */
+
+    document
+        .querySelectorAll('.draggable-item')
+        .forEach(item => {
+
+            let dragging = false;
+            let startX = 0;
+            let startY = 0;
+
+            let originalX = 0;
+            let originalY = 0;
+
+            let rotation = 0;
+
+            function getPosition() {
+
+                const transform =
+                    getComputedStyle(item).transform;
+
+                if (
+                    !transform ||
+                    transform === 'none'
+                ) {
+                    return {
+                        x: 0,
+                        y: 0
+                    };
+                }
+
+                const values =
+                    transform
+                        .replace('matrix(', '')
+                        .replace(')', '')
+                        .split(',')
+                        .map(Number);
+
+                return {
+                    x: values[4] || 0,
+                    y: values[5] || 0
+                };
+            }
+
+            function startDrag(e) {
+
+                if (
+                    e.target.closest('.closeLetter')
+                ) {
+                    return;
+                }
+
+                dragging = true;
+
+                item.classList.add('dragging');
+
+                const point =
+                    e.type === 'touchstart'
+                        ? e.touches[0]
+                        : e;
+
+                startX = point.clientX;
+                startY = point.clientY;
+
+                const position =
+                    getPosition();
+
+                originalX = position.x;
+                originalY = position.y;
+
+                item.style.zIndex =
+                    String(
+                        1000 +
+                        Date.now()
+                    );
+            }
+
+            function moveDrag(e) {
+
+                if (!dragging) return;
+
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
+
+                const point =
+                    e.type === 'touchmove'
+                        ? e.touches[0]
+                        : e;
+
+                const dx =
+                    point.clientX - startX;
+
+                const dy =
+                    point.clientY - startY;
+
+                item.style.transform =
+                    `translate(${originalX + dx}px, ${originalY + dy}px) scale(1.03) rotate(${rotation}deg)`;
+            }
+
+            function endDrag() {
+
+                if (!dragging) return;
+
+                dragging = false;
+
+                item.classList.remove('dragging');
+
+                const position =
+                    getPosition();
+
+                item.style.transform =
+                    `translate(${position.x}px, ${position.y}px) scale(1) rotate(${rotation}deg)`;
+            }
+
+            item.addEventListener(
+                'mousedown',
+                startDrag
+            );
+
+            document.addEventListener(
+                'mousemove',
+                moveDrag
+            );
+
+            document.addEventListener(
+                'mouseup',
+                endDrag
+            );
+
+            item.addEventListener(
+                'touchstart',
+                startDrag,
+                { passive: true }
+            );
+
+            document.addEventListener(
+                'touchmove',
+                moveDrag,
+                { passive: false }
+            );
+
+            document.addEventListener(
+                'touchend',
+                endDrag
+            );
+
+            item.addEventListener(
+                'dragstart',
+                e => e.preventDefault()
+            );
+        });
 
     /* =========================
        DOUBLE CLICK HEARTS
@@ -770,11 +771,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        fireworks(
+        spawnHearts(
             e.clientX,
-            e.clientY
+            e.clientY,
+            20
         );
-
     });
 
+    console.log('Birthday surprise loaded successfully');
 });

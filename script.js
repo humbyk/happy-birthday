@@ -2040,8 +2040,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        finalSequenceStarted =
-            true;
+        finalSequenceStarted = true;
 
         envelopeOverlay.classList.remove(
             'show'
@@ -2068,11 +2067,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     () => {
 
                         finalSurprise.classList.add(
-                            'ready'
+                            'pause-show'
                         );
 
                     },
-                    TIMING.finalReadyDelay
+                    700
+                );
+
+                setTimeout(
+                    () => {
+
+                        finalSurprise.classList.add(
+                            'tease-show'
+                        );
+
+                    },
+                    2600
                 );
 
             },
@@ -2090,29 +2100,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
             playChime();
 
+            finalHeartButton.style.pointerEvents =
+                'none';
+
             spawnHeartFireworks(
                 window.innerWidth / 2,
                 window.innerHeight / 2,
                 110
             );
 
-            finalSurprise.classList.add(
-                'message-open'
-            );
-
             setTimeout(
                 () => {
 
-                    if (finalMessage) {
+                    finalSurprise.classList.add(
+                        'message-open'
+                    );
 
-                        finalMessage.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'center'
-                        });
-                    }
+                    setTimeout(
+                        () => {
+
+                            if (finalMessage) {
+
+                                finalMessage.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                });
+
+                            }
+
+                        },
+                        500
+                    );
 
                 },
-                TIMING.finalScrollDelay
+                280
             );
         }
     );

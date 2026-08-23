@@ -86,6 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalMessage =
         document.getElementById('finalMessage');
 
+    const epilogueButton =
+        document.getElementById('epilogueButton');
+
+    const epilogue =
+        document.getElementById('epilogue');
+
     const envelopeOverlay =
         document.getElementById('envelopeOverlay');
 
@@ -2137,6 +2143,32 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
     );
+
+    /* =========================================
+       LITTLE EPILOGUE
+    ========================================= */
+
+    if (epilogueButton && epilogue) {
+        epilogueButton.addEventListener('click', () => {
+            const opening = !epilogue.classList.contains('show');
+
+            epilogue.classList.toggle('show');
+            epilogueButton.classList.toggle('opened');
+
+            if (opening) {
+                playChime();
+                epilogueButton.querySelector('span').textContent =
+                    'okay now it is actually over 😭';
+
+                setTimeout(() => {
+                    epilogue.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }, 180);
+            }
+        });
+    }
 
     /* =========================================
        DRAGGABLE LETTERS

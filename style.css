@@ -2172,3 +2172,76 @@ button {
         padding: 12px 10px;
     }
 }
+
+/* =========================================
+   PERSONAL NOTE + EPILOGUE UPGRADE
+========================================= */
+.personal-note-card {
+    position: relative;
+    margin: 22px auto 26px;
+    width: min(100%, 520px);
+    padding: 28px 28px 24px;
+    border-radius: 22px;
+    overflow: hidden;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.035));
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 22px 55px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.12);
+    backdrop-filter: blur(12px);
+    transform: rotate(-1.2deg);
+    animation: personalNoteFloat 5s ease-in-out infinite;
+}
+.personal-note-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 15% 10%, rgba(255,90,150,.18), transparent 38%), radial-gradient(circle at 85% 90%, rgba(255,190,100,.10), transparent 35%);
+    pointer-events: none;
+}
+.personal-note-card p {
+    position: relative;
+    margin: 0;
+    color: rgba(255,255,255,.94);
+    font-family: "Dancing Script", cursive;
+    font-size: clamp(25px, 4vw, 34px);
+    line-height: 1.28;
+    text-shadow: 0 2px 18px rgba(0,0,0,.25);
+}
+.note-sparkle { display:block; margin-bottom: 9px; font-size: 24px; opacity:.8; }
+.note-signoff { position:relative; display:block; margin-top:14px; font-size:12px; letter-spacing:.14em; text-transform:uppercase; opacity:.58; }
+@keyframes personalNoteFloat { 0%,100% { transform: rotate(-1.2deg) translateY(0); } 50% { transform: rotate(-.3deg) translateY(-5px); } }
+
+.future-note {
+    margin: 28px auto 10px;
+    padding: 22px 8px 4px;
+    max-width: 590px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,.12);
+}
+.future-label { display:block; margin-bottom:10px; font-family:"Dancing Script",cursive; font-size:30px; color:var(--pink-light); }
+.future-note p { margin: 12px auto !important; }
+.future-highlight { color: var(--pink-light) !important; font-family:"Dancing Script",cursive; font-size: clamp(23px,4vw,30px) !important; line-height:1.25 !important; }
+
+.epilogue-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 30px auto 10px;
+    padding: 12px 18px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 999px;
+    color: rgba(255,255,255,.76);
+    background: rgba(255,255,255,.045);
+    cursor: pointer;
+    transition: transform .25s ease, background .25s ease, color .25s ease;
+}
+.epilogue-button:hover { transform: translateY(-2px); background:rgba(255,255,255,.09); color:#fff; }
+.epilogue-button b { font-size:18px; }
+.epilogue { max-height:0; opacity:0; overflow:hidden; transform:translateY(16px); transition:max-height .8s ease, opacity .65s ease, transform .65s ease, margin .65s ease; text-align:center; margin:0 auto; }
+.epilogue.show { max-height:500px; opacity:1; transform:translateY(0); margin:28px auto 10px; }
+.epilogue-mini { font-size:13px; opacity:.65; }
+.epilogue h2 { margin:14px 0 8px; font-family:"Dancing Script",cursive; font-size:clamp(31px,6vw,48px); color:var(--pink-light); }
+.epilogue p { margin:0 auto !important; max-width:460px; }
+.epilogue-hearts { margin-top:18px; letter-spacing:10px; font-size:22px; animation: epiloguePulse 2.5s ease-in-out infinite; }
+@keyframes epiloguePulse { 0%,100%{transform:scale(1);opacity:.72} 50%{transform:scale(1.08);opacity:1} }
+@media (max-width:600px) { .personal-note-card { padding:24px 20px 21px; } .personal-note-card p { font-size:27px; } }

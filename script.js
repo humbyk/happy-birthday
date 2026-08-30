@@ -315,6 +315,77 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSong();
 
     /* =========================================
+       BUTTON SPRINKLES
+    ========================================= */
+
+    function sprinkleButtonMagic(event) {
+
+        const button =
+            event.target.closest(
+                '[data-sparkle-button]'
+            );
+
+        if (!button) {
+            return;
+        }
+
+        const shapes = ['♥', '✦', '•', '♡'];
+        const colors = ['#ffd785', '#ffb6cc', '#d4c5ff', '#fff4d6'];
+
+        for (let i = 0; i < 4; i++) {
+
+            const spark =
+                document.createElement('span');
+
+            const angle =
+                (Math.PI * 2 / 4) * i +
+                (Math.random() * .35 - .175);
+
+            const distance =
+                19 + Math.random() * 15;
+
+            spark.className =
+                'button-spark';
+
+            spark.textContent =
+                shapes[i];
+
+            spark.style.setProperty(
+                '--spark-x',
+                `${Math.cos(angle) * distance}px`
+            );
+
+            spark.style.setProperty(
+                '--spark-y',
+                `${Math.sin(angle) * distance}px`
+            );
+
+            spark.style.setProperty(
+                '--spark-color',
+                colors[i]
+            );
+
+            spark.style.setProperty(
+                '--size',
+                `${13 + Math.random() * 7}px`
+            );
+
+            button.appendChild(spark);
+
+            spark.addEventListener(
+                'animationend',
+                () => spark.remove(),
+                { once: true }
+            );
+        }
+    }
+
+    document.addEventListener(
+        'pointerdown',
+        sprinkleButtonMagic
+    );
+
+    /* =========================================
        BACKGROUND PARTICLES
     ========================================= */
 

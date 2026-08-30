@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Gaegu:wght@400;700&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="./style.css">
@@ -35,6 +35,13 @@
     <div class="ambient-glow glow-three"></div>
 
     <div class="bg-particles" id="bgParticles"></div>
+
+    <div class="corner-doodles" aria-hidden="true">
+        <span class="doodle doodle-heart">&#9825;</span>
+        <span class="doodle doodle-sparkle">&#10022;</span>
+        <span class="doodle doodle-dot">&#8226;</span>
+        <span class="doodle doodle-heart doodle-heart-two">&#9825;</span>
+    </div>
 
     <canvas id="balloonCanvas"></canvas>
 
@@ -69,6 +76,7 @@
                 class="gift-box"
                 id="giftBox"
                 type="button"
+                data-sparkle-button
                 aria-label="Open your birthday surprise">
 
                 <div class="ribbon-vertical"></div>
@@ -87,10 +95,10 @@
             </button>
 
             <div class="gift-copy">
-                <span class="gift-mini">A little something for you</span>
+                <span class="gift-mini">a tiny birthday delivery</span>
 
                 <p class="gift-instruction">
-                    Tap to open your surprise
+                    psst... tap me open
                     <span>🎁</span>
                 </p>
 
@@ -173,12 +181,13 @@
                 <button
                     class="footer-action"
                     id="skipTypingBtn"
-                    type="button">
+                    type="button"
+                    data-sparkle-button>
 
                     <span class="action-icon">💌</span>
 
                     <span class="action-text">
-                        Open Me
+                        peek at the next little thing
                     </span>
 
                     <span class="action-arrow">→</span>
@@ -229,7 +238,7 @@
             </h2>
 
             <p>
-                There are four little pieces of my heart inside.
+                Read all of these notes, then close each one using its little X!
             </p>
         </div>
 
@@ -244,12 +253,13 @@
                 <button
                     class="heart"
                     id="openEnvelopeBtn"
-                    aria-label="Open envelope">
+                    aria-label="Open envelope"
+                    data-sparkle-button>
 
                     <span class="heart-icon">♥</span>
 
                     <span class="heart-text">
-                        Open
+                        unseal me
                     </span>
 
                 </button>
@@ -330,8 +340,8 @@
                     </div>
 
                     <p>
-                        Even the smallest moments feel special
-                        with you. 💕 I love making memories with you.
+                        I hope this little surprise adds a soft smile
+                        to your day. 💕
                     </p>
 
                     <cite>
@@ -472,7 +482,8 @@
                 class="final-heart-button"
                 id="finalHeartButton"
                 aria-label="Open final message"
-                type="button">
+                type="button"
+                data-sparkle-button>
 
                 <span class="heart-ring ring-one"></span>
                 <span class="heart-ring ring-two"></span>
@@ -482,7 +493,7 @@
                 </span>
 
                 <span class="final-heart-text">
-                    One more...
+                    one more tiny thing...
                 </span>
 
             </button>
@@ -550,8 +561,8 @@
                     </p>
                 </div>
 
-                <button class="epilogue-button" id="epilogueButton" type="button">
-                    <span>one last tiny thing</span> <b>→</b>
+                <button class="epilogue-button" id="epilogueButton" type="button" data-sparkle-button>
+                    <span>one teeny tiny thing</span> <b>→</b>
                 </button>
 
                 <div class="epilogue" id="epilogue" aria-live="polite">

@@ -2317,6 +2317,45 @@ button:focus-visible {
     animation: giftTwinkle 2.9s ease-in-out infinite;
 }
 
+.kitty-sticker {
+    position: absolute;
+    z-index: 4;
+    width: 74px;
+    height: auto;
+    pointer-events: none;
+    filter: drop-shadow(0 10px 12px rgba(67, 20, 50, .24));
+    animation: kittyFloat 4.4s ease-in-out infinite;
+}
+
+.kitty-gift {
+    left: -62px;
+    top: 53px;
+    rotate: -12deg;
+}
+
+.kitty-card {
+    top: 21px;
+    left: 18px;
+    width: 52px;
+    rotate: -11deg;
+    animation-delay: -1.8s;
+}
+
+.kitty-final {
+    z-index: 1;
+    top: 72px;
+    right: -42px;
+    width: 84px;
+    opacity: .72;
+    rotate: 10deg;
+    animation-delay: -2.7s;
+}
+
+@keyframes kittyFloat {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -7px; }
+}
+
 .gift-box-container::before { top: 58px; left: 21px; transform: rotate(-16deg); }
 .gift-box-container::after { right: 15px; top: 112px; color: rgba(255, 211, 124, .75); font-size: 19px; animation-delay: -1.3s; }
 
@@ -2501,6 +2540,9 @@ button:focus-visible {
     .accent { font-size: 42px; }
     .gift-instruction { font-size: 17px; }
     .action-text { max-width: 160px; line-height: 1.05; text-align: left; }
+    .kitty-gift { left: -40px; width: 61px; }
+    .kitty-card { left: 11px; width: 44px; }
+    .kitty-final { right: -27px; width: 65px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2510,5 +2552,110 @@ button:focus-visible {
     .gift-box-container::after,
     .note-sparkle,
     .letter-icon,
+    .kitty-sticker,
     .button-spark { animation: none; }
+}
+
+/* =========================================
+   NOTE SLIDESHOW
+========================================= */
+.envelope-intro {
+    top: 26px;
+    z-index: 35;
+    padding: 13px 20px 15px;
+    border: 1px solid rgba(255, 224, 235, .24);
+    border-radius: 19px 17px 20px 16px;
+    background: rgba(47, 17, 42, .6);
+    box-shadow: 0 14px 35px rgba(19, 5, 18, .22);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.envelope-intro h2 {
+    margin-top: 2px;
+    color: #fff8fb;
+    font-family: "Gaegu", "Outfit", sans-serif;
+    font-size: 29px;
+    font-weight: 700;
+}
+
+.envelope-intro p {
+    margin: 4px auto 0;
+    max-width: 320px;
+    color: rgba(255, 241, 247, .86);
+    font-family: "Gaegu", "Outfit", sans-serif;
+    font-size: 16px;
+    line-height: 1.15;
+}
+
+.envelope-overlay.slideshow-mode .envelope-intro {
+    border-color: rgba(255, 204, 224, .42);
+    box-shadow: 0 16px 40px rgba(19, 5, 18, .34), 0 0 25px rgba(255, 133, 178, .1);
+}
+
+.envelope-overlay.slideshow-mode .draggable-item {
+    cursor: default;
+}
+
+.draggable-item.active-note {
+    width: min(288px, calc(100vw - 64px));
+    min-height: 252px;
+    padding: 37px 31px 28px;
+    border: 1px solid rgba(190, 105, 137, .3);
+    border-radius: 19px 23px 18px 22px;
+    box-shadow: 0 30px 70px rgba(20, 5, 18, .42), 0 0 0 6px rgba(255, 255, 255, .04);
+}
+
+.draggable-item.active-note p {
+    font-size: 25px;
+    line-height: 1.35;
+}
+
+.draggable-item.active-note .letter-icon {
+    font-size: 25px;
+}
+
+.draggable-item.active-note .closeLetter {
+    top: 11px;
+    right: 12px;
+    width: 33px;
+    height: 33px;
+    border-color: rgba(221, 87, 132, .35);
+    color: #fff;
+    background: #e96798;
+    box-shadow: 0 5px 12px rgba(138, 43, 83, .22);
+    font-size: 22px;
+}
+
+.draggable-item.active-note .closeLetter:hover {
+    background: #d95084;
+    transform: rotate(90deg) scale(1.08);
+}
+
+.envelope-progress {
+    z-index: 35;
+    min-width: 108px;
+    padding: 7px 12px;
+    border: 1px solid rgba(255, 225, 235, .16);
+    border-radius: 999px;
+    background: rgba(38, 12, 34, .55);
+    color: rgba(255, 240, 246, .8);
+    font-family: "Gaegu", "Outfit", sans-serif;
+    font-size: 14px;
+    letter-spacing: .04em;
+    text-align: center;
+    text-transform: none;
+}
+
+@media (max-width: 600px) {
+    .envelope-intro {
+        top: 18px;
+        width: min(350px, calc(100% - 54px));
+        padding: 10px 14px 12px;
+    }
+
+    .envelope-intro h2 { font-size: 24px; }
+    .envelope-intro p { font-size: 14px; }
+    .draggable-item.active-note { min-height: 235px; padding: 34px 25px 25px; }
+    .draggable-item.active-note p { font-size: 22px; }
 }

@@ -1819,6 +1819,10 @@ document.addEventListener('DOMContentLoaded', () => {
             'active'
         );
 
+        envelopeOverlay.classList.remove(
+            'slideshow-mode'
+        );
+
         openEnvelopeBtn.style.opacity =
             '1';
 
@@ -1849,13 +1853,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     '50%';
 
                 item.style.top =
-                    '35%';
+                    '50%';
 
                 item.style.zIndex =
                     '1';
 
                 item.style.pointerEvents =
-                    'auto';
+                    'none';
+
+                item.classList.remove(
+                    'active-note'
+                );
 
                 item.dataset.index =
                     index;
@@ -1879,98 +1887,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
         playChime();
 
+        envelopeOverlay.classList.add(
+            'slideshow-mode'
+        );
+
         const letters =
             document.querySelectorAll(
                 '.draggable-item'
             );
 
-        const fanOffsets =
-            getFanOffsets();
-
-        letters.forEach(
-            (item, index) => {
-
-                const offset =
-                    fanOffsets[index];
-
-                setTimeout(
-                    () => {
-
-                        item.style.opacity =
-                            '1';
-
-                        item.style.transform =
-                            `translate(calc(-50% + ${offset.dx}px), calc(-50% + ${offset.dy}px)) scale(1) rotate(${offset.rot}deg)`;
-
-                        // Remember where the CSS placed it, in plain
-                        // numbers, so dragging doesn't need to parse
-                        // the transform matrix back out later.
-                        item.dragState = {
-                            x: offset.dx,
-                            y: offset.dy,
-                            rotate: offset.rot
-                        };
-
-                    },
-                    TIMING.letterFanStart +
-                    index * TIMING.letterFanStagger
-                );
-            }
+        setTimeout(
+            () => revealLetter(letters[0]),
+            TIMING.letterFanStart
         );
     }
 
-    function getFanOffsets() {
+    function revealLetter(letter) {
 
-        if (
-            window.innerWidth < 500
-        ) {
-
-            return [
-                {
-                    dx: -45,
-                    dy: -105,
-                    rot: -7
-                },
-                {
-                    dx: 45,
-                    dy: -120,
-                    rot: 7
-                },
-                {
-                    dx: -30,
-                    dy: -175,
-                    rot: -4
-                },
-                {
-                    dx: 35,
-                    dy: -65,
-                    rot: 9
-                }
-            ];
+        if (!letter) {
+            return;
         }
 
-        return [
-            {
-                dx: -80,
-                dy: -130,
-                rot: -8
-            },
-            {
-                dx: 80,
-                dy: -150,
-                rot: 8
-            },
-            {
-                dx: -20,
-                dy: -200,
-                rot: -4
-            },
-            {
-                dx: 50,
-                dy: -70,
-                rot: 10
-            }
-        ];
+        const index =
+            Number(letter.dataset.index || 0);
+
+        const rotations = [-2, 1.5, -1, 2];
+
+        document.querySelectorAll(
+            '.draggable-item'
+        ).forEach(
+            item => item.classList.remove('active-note')
+        );
+
+        letter.classList.add(
+            'active-note'
+        );
+
+        letter.style.display =
+            'flex';
+
+        letter.style.opacity =
+            '1';
+
+        letter.style.pointerEvents =
+            'auto';
+
+        letter.style.zIndex =
+            `${50 + index}`;
+
+        letter.style.transform =
+            `translate(-50%, -50%) scale(1) rotate(${rotations[index] || 0}deg)`;
     }
 
     openEnvelopeBtn.addEventListener(
@@ -2005,26 +1971,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateLetterProgress() {
 
-        const remaining =
+        const total =
             document.querySelectorAll(
                 '.draggable-item'
-            ).length -
-            closedLetters;
+            ).length;
+
+        const remaining =
+            total - closedLetters;
 
         if (remaining <= 0) {
 
             letterProgress.innerText =
-                "all opened ❤️";
-
-        } else if (remaining === 1) {
-
-            letterProgress.innerText =
-                "one little surprise left";
+                "all notes read";
 
         } else {
 
             letterProgress.innerText =
-                `${remaining} little surprises left`;
+                `note ${closedLetters + 1} of ${total}`;
         }
     }
 
@@ -2068,6 +2031,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     letter.style.pointerEvents =
                         'none';
 
+                    letter.classList.remove(
+                        'active-note'
+                    );
+
                     letter.style.opacity =
                         '0';
 
@@ -2097,6 +2064,24 @@ document.addEventListener('DOMContentLoaded', () => {
                             ) {
 
                                 startFinalSequence();
+
+                            } else {
+
+                                const nextLetter =
+                                    Array.from(
+                                        document.querySelectorAll(
+                                            '.draggable-item'
+                                        )
+                                    ).find(
+                                        item =>
+                                            item.dataset.closed !==
+                                            'true'
+                                    );
+
+                                setTimeout(
+                                    () => revealLetter(nextLetter),
+                                    120
+                                );
                             }
 
                         },
@@ -2284,6 +2269,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             function dragStart(e) {
+
+                if (
+                    envelopeOverlay.classList.contains(
+                        'slideshow-mode'
+                    )
+                ) {
+                    return;
+                }
 
                 if (
                     e.target.closest(
